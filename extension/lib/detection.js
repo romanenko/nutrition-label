@@ -12,7 +12,7 @@ export function sanitizeSnapshot(input, preferences) {
       ...counts(input.feed, ["items", "reactions", "ratings"]) },
     media: counts(input.media, ["configured", "observed", "mutedStarts", "alreadyPlaying"]),
     infinite: { observed: input.infinite?.observed === true, scrolled: input.infinite?.scrolled === true },
-    ui: { ...counts(input.ui, ["overlays", "ads", "recommendations", "notifications", "streaks", "controls", "repeatedPrompts"]), obstruction: ratio(input.ui?.obstruction) },
+    ui: { ...counts(input.ui, ["overlays", "ads", "recommendations", "notifications", "notificationBadges", "streaks", "controls", "repeatedPrompts"]), obstruction: ratio(input.ui?.obstruction) },
     coverage: { ...counts(input.coverage, ["frames", "unlabeled", "durationSeconds"]), limited: input.coverage?.limited === true, privateContext: input.coverage?.privateContext === true },
     regions: [], items: [],
   };
@@ -43,7 +43,10 @@ export function ruleFindings(snapshot) {
   result.banners = snapshot.ui.obstruction >= 0.15 ? finding("detected", `Overlay covers about ${Math.round(snapshot.ui.obstruction * 100)}% of the viewport; purpose may be functional`) : finding("not_observed", "No large obstructive overlay observed");
   result.ads = seen(snapshot.ui.ads, `${snapshot.ui.ads} visible ad or sponsorship label(s)`);
   result.recommendations = seen(snapshot.ui.recommendations, "Recommendation wording visible; personalization unverified");
-  result.notifications = seen(snapshot.ui.notifications, `Notification request visible${snapshot.ui.repeatedPrompts ? "; a dismissed prompt returned" : ""}`);
+  const notificationEvidence = [];
+  if (snapshot.ui.notifications) notificationEvidence.push("Notification request visible");
+  if (snapshot.ui.notificationBadges) notificationEvidence.push("Unread notification/activity badge visible");
+  result.notifications = seen(notificationEvidence.length, `${notificationEvidence.join("; ")}. Notification frequency and push delivery unverified.`);
   result.streaks = seen(snapshot.ui.streaks, "Streak or daily reward wording visible");
   result.controls = seen(snapshot.ui.controls, "Stopping point, pagination, or attention control visible");
   result.deception = unknown(snapshot.regions.some(region => region.kind === "prompt") ? "Prompt found; enable Jev for classification" : "No classifiable prompt collected");

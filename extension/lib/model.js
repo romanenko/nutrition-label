@@ -1,4 +1,4 @@
-export const DETECTOR_VERSION = "1";
+export const DETECTOR_VERSION = "2";
 export const MODEL = "jev-1.13.0";
 export const THRESHOLD = 0.9;
 export const CRITERIA = [
@@ -14,7 +14,7 @@ export const CRITERIA = [
   { id: "ads", label: "Ads & sponsorship" },
   { id: "deception", label: "Deceptive prompts" },
   { id: "recommendations", label: "Recommendations" },
-  { id: "notifications", label: "Notification prompts" },
+  { id: "notifications", label: "Notifications" },
   { id: "streaks", label: "Streaks & rewards" },
   { id: "controls", label: "Stopping & control", positive: true },
 ];

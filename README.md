@@ -1,6 +1,27 @@
 # Nutrition Label
 
-A nutrition label for the web: a Chrome extension that shows how the pages you visit compete for your attention. Inspired by [Vlada Bortnik's technology nutrition labels](https://www.linkedin.com/pulse/weve-been-talking-big-techs-tobacco-moment-years-lets-vlada-jpt2c).
+**Idea and research foundation: Vlada Bortnik's articles.** Her writing inspired this project's nutrition-label concept, attention-pattern research and A–F grading:
+
+- [Good for you social tech can also be good for business](https://www.linkedin.com/pulse/good-you-social-tech-can-also-business-vlada-bortnik-she-her--xenrc/) — July 30, 2024; the proposal to make technology's effects visible through nutrition-style labels.
+- [We’ve been talking about Big Tech’s “Big Tobacco” moment for years. Let’s do something about it.](https://www.linkedin.com/pulse/weve-been-talking-big-techs-tobacco-moment-years-lets-vlada-jpt2c) — October 28, 2024; the four categories and A–F scale used here.
+
+Our [detection research](docs/detection-research.md) translates those ideas into browser observations and optional AI classification. The extension shows how the pages you visit compete for your attention.
+
+## Download and try it
+
+**[Download the Chrome extension (.zip)](https://github.com/romanenko/nutrition-label/releases/latest/download/nutrition-label-chrome.zip)** · [Latest release and notes](https://github.com/romanenko/nutrition-label/releases/latest) · [Install guide](docs/INSTALL.txt)
+
+No build tools or development server required. Local detection works without an API key. Use Chrome 120 or newer on a desktop computer.
+
+1. Download **nutrition-label-chrome.zip** from the release assets and extract it (double-click on macOS; **Extract All** on Windows).
+2. Keep the extracted files in a permanent location. Find the **nutrition-label** folder containing `manifest.json`; `INSTALL.txt` sits beside it.
+3. Enter `chrome://extensions` in Chrome's address bar and turn on **Developer mode**.
+4. Click **Load unpacked** and select that **nutrition-label** folder.
+5. Pin **Nutrition Label** using Chrome's puzzle-piece menu. Visit a website and click the icon. Browse normally and reopen the popup to see updated observations.
+
+Enable **Assess this site as I browse** to track more pages on that origin. Add your own Jev key through **Jev & settings** only if you want AI classification. Unknown criteria remain hidden; the grade is an estimate from the observed sample.
+
+The repository and downloads are public, and the project is tagged [Punk Software](https://github.com/topics/punksoftware). The ZIP is self-contained and includes no API key or browsing data. This is an unpacked preview, not a Chrome Web Store installation; updates are manual. Choose the extension ZIP asset, not GitHub's **Source code** archives.
 
 ## Version 0.2
 
@@ -17,7 +38,8 @@ The **Website Facts** popup collects real observations. It combines local DOM an
 | Obstructive banners | Large visible fixed/sticky panels and dialogs, with approximate viewport obstruction. |
 | Ads and sponsorship | Visible ad/sponsorship labels. |
 | Deceptive prompts | Jev classifies wording from candidate prompts and action labels. |
-| Recommendations, notification prompts, streaks/rewards | Visible wording rules. |
+| Recommendations, streaks/rewards | Visible wording rules. |
+| Notifications | Request wording or a visible unread count on a named Notifications/Activity/Alerts control. |
 | Stopping points and controls | Pagination, Load more, caught-up, ordering and autoplay-control wording. |
 
 **Overall grades use Vlada's A–F scale:** A = 0 categories, B = 1, C = 2, D = 3, F = all 4. There is no E. The grade counts distinct categories indicated anywhere in the current origin assessment, using these observable proxies:
@@ -26,7 +48,7 @@ The **Website Facts** popup collects real observations. It combines local DOM an
 | --- | --- |
 | Attention monetization | Ads or sponsorship labels |
 | Personalized ranking | Recommendation wording |
-| Persistent notifications | Notification request wording |
+| Persistent notifications | Notification request wording or an unread notification/activity badge; frequency and push delivery remain unverified |
 | Infinite engagement | Infinite scroll, unsolicited autoplay, or streaks/rewards; together they count once |
 
 The grade is an **estimate**: these signals do not verify a company's business model, its ranking algorithm or notification persistence. An empty or unresolved scan cannot earn A. With detected categories and missing evidence, the grade is marked partial and may worsen as more categories are observed. A requires all mapped signals to have been assessed without detections; it still describes the observed sample, not proof that a website is harmless. Inspection details show the four contributions and link to the article. No weights or probability averaging are used for the letter grade.
@@ -51,7 +73,7 @@ npm run dev
 Keep the terminal running. Vite and CRXJS build into `dist/dev` as you edit `extension/`.
 
 1. Open `chrome://extensions` and enable **Developer mode**.
-2. Choose **Load unpacked** and select `/Users/michael/Developer/nutrition-label/dist/dev` (or your checkout's `dist/dev`). On macOS, use **Command + Shift + G** in the picker to paste a path.
+2. Choose **Load unpacked** and select your checkout's `dist/dev` folder. On macOS, use **Command + Shift + G** in the picker to paste its full path.
 3. Disable any older copy loaded from `extension/` or `dist/release`. Pin **Nutrition Label (Dev)**.
 4. Open a regular website and click the extension. It begins a two-minute observation window. Scroll and use the page normally, then reopen the popup to see findings.
 5. Enable **Assess this site as I browse** to collect on future visits and route changes. Chrome asks for that site's access and navigation permission. Other origins need their own opt-in.
@@ -71,6 +93,14 @@ npm run build
 ```
 
 Load `dist/release` as an unpacked extension. It needs no development server. Building does not overwrite `dist/dev`. Local detection works without a Jev key.
+
+To create the downloadable package, use Python 3 in addition to Node:
+
+```sh
+npm run package
+```
+
+This rebuilds the release and writes `dist/downloads/nutrition-label-chrome.zip` plus its SHA-256 checksum. The archive contains the standalone extension, installation instructions and bundled dependency notices. It never copies browser storage, development output or local test artifacts. Upload these files to a versioned GitHub release; keep the asset name stable so the README download link points to the latest version.
 
 ## Jev settings
 
@@ -104,7 +134,7 @@ npm test
 npm run build
 ```
 
-Tests cover encrypted storage and failure states, content-script authorization, navigation/page identity, reset and late responses, input bounds, redaction, uncertainty, mocked Jev transport, all five grade boundaries, category deduplication and incomplete grading coverage. They require no API key and make no paid requests.
+Tests cover encrypted storage and failure states, content-script authorization, navigation/page identity, reset and late responses, input bounds, redaction, uncertainty, mocked Jev transport, all five grade boundaries, category deduplication, incomplete grading coverage, and notification badge positives/false positives. They require no API key and make no paid requests.
 
 For manual checks, visit [the local fixture](http://127.0.0.1:5173/fixture.html?page=one) while Vite runs. This synthetic page is excluded from the release build. Avoid editing source during a navigation test because hot reload resets the fixture.
 
@@ -115,6 +145,7 @@ For manual checks, visit [the local fixture](http://127.0.0.1:5173/fixture.html?
 5. Try an unrelated origin: it has a separate assessment. Reset the fixture site: its saved findings disappear and following stops.
 6. Use a dummy key to exercise encrypted Save, Lock, wrong-passphrase rejection, Unlock and Forget. Do not test a dummy key against the provider.
 7. Open `chrome://extensions` and the localhost layout preview: neither should produce a fabricated page assessment or accept a real API key in the preview.
+8. Visit `fixture.html?page=one&badges=1`. The notification permission prompt is hidden. **Toggle unread badge** adds/removes the visible Activity count; an empty control should not produce a notification finding. Reset the fixture assessment between positive/negative checks because detections persist once observed.
 
 Verified in Chrome with the synthetic fixture: local feed/reaction/rating detection, infinite scroll, user-started versus unsolicited muted video, origin counting through full and SPA navigation, reload deduplication, restricted content-script storage, and the encrypted-key lifecycle. A user-provided key also passed the live connection test and returned classifications for synthetic feed text. Browser checks on a synthetic fixture validate mechanics, not real-world detection accuracy; representative Jev evaluation remains future work.
 

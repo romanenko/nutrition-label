@@ -4,12 +4,15 @@ body{font:16px Arial;margin:24px;max-width:800px}#feed{height:320px;overflow:aut
 </style></head><body>
 <h1>Detector fixture</h1><p>Synthetic content for local verification. No remote resources.</p>
 <nav><a href="fixture.html?page=one">Page one</a> · <a href="fixture.html?page=two">Page two</a> · <button id="route">SPA route</button> · <button id="banner-toggle">Show offer</button></nav>
-<p><button>For you</button><button>Allow notifications</button><span>7-day streak</span></p>
+<p><button>For you</button><button id="notification-permission">Allow notifications</button><span>7-day streak</span></p>
+<p><button id="activity" aria-label="Activity" aria-pressed="false"><sup id="unread-badge" hidden>4</sup> Activity</button><button id="badge-toggle">Toggle unread badge</button><button aria-label="Messages">4 Messages</button></p>
 <div id="feed" role="feed" aria-label="Sample feed"></div>
 <div class="video-player"><video id="video" muted playsinline controls></video><button id="play">Play video</button><button id="automatic">Schedule video</button><button id="pause">Pause video</button></div>
 <aside id="banner" role="dialog" aria-label="Offers" hidden><h2>Weekly offers</h2><p>Save on your next order</p><button id="accept">Send offers</button><button id="decline">No thanks, I enjoy paying more</button></aside>
 <script type="module">
 const feed=document.querySelector('#feed');let count=0,loading=false;
+document.querySelector('#notification-permission').hidden=new URLSearchParams(location.search).has('badges');
+document.querySelector('#badge-toggle').onclick=()=>{const badge=document.querySelector('#unread-badge');badge.hidden=!badge.hidden;};
 function append(){for(let i=0;i<5;i++){const card=document.createElement('article');card.dataset.id=String(++count);card.innerHTML='<h2>Update '+count+'</h2><p>A report about the city council election.</p><button aria-label="Like this post">♡ Like</button><button aria-label="Rate 5 stars">☆ Rate</button>'+(count===1?'<span>Sponsored</span>':'');feed.append(card);}}
 append();
 feed.addEventListener('scroll',()=>{if(!loading&&feed.scrollHeight-feed.scrollTop-feed.clientHeight<80){loading=true;setTimeout(()=>{append();loading=false;},150);}});

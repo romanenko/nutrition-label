@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "package": "npm run build && python3 scripts/package.py",
     "test": "node --experimental-vm-modules --test tests/*.test.js"
   },
   "devDependencies": {

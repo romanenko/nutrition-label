@@ -1,8 +1,9 @@
 import { computeAccessibleName } from "dom-accessibility-api";
 import { redact } from "./lib/model.js";
+import { hasNotificationBadge, isNotificationControl } from "./lib/notifications.js";
 
 const PRIVATE = "input,textarea,[contenteditable]:not([contenteditable=false]),[role=log],[role=textbox],[data-private],[data-sensitive]";
-const INTERACTIVE = "button,a,[role=button],[role=radio],[role=slider],input[type=checkbox],input[type=radio]";
+const INTERACTIVE = "button,a,[role=button],[role=checkbox],[role=switch],[role=radio],[role=slider],input[type=checkbox],input[type=radio]";
 const ARTICLE = "article,[role=article],[data-testid=tweet],[data-testid=post],.feed-shared-update-v2";
 const reaction = /\b(like|unlike|heart|react|reaction|love|clap|applaud)\b/i;
 const rating = /\b(upvote|downvote|rate|rating|[1-5] stars?)\b/i;
@@ -218,6 +219,9 @@ export function createCollector(send = message => chrome.runtime.sendMessage(mes
         ads: new Set(labels.filter(text => /^(ad|advertisement|sponsored|promoted|paid partnership|sponsored content)(\s*[:·|].*)?$/i.test(text))).size,
         recommendations: labels.filter(text => /^(for you|recommended( for you)?|suggested( for you)?|because you (watched|liked).*)$/i.test(text)).length,
         notifications: labels.filter(text => /\b(enable|allow|turn on|get|receive) (push )?notifications\b/i.test(text)).length,
+        notificationBadges: controls.filter(el => isNotificationControl(names.get(el)) && hasNotificationBadge(names.get(el),
+          [...el.querySelectorAll("*")].slice(0, 40).filter(child => !child.children.length && !isPrivate(child) && visible(child))
+            .map(child => safeText(child, 60)))).length,
         streaks: labels.filter(text => /\b(\d+[- ]day streak|daily reward|keep your streak|lose your streak)\b/i.test(text)).length,
         controls: labels.filter(text => control.test(text)).length },
       coverage: { frames: shown.filter(el => el.matches("iframe,frame")).length,

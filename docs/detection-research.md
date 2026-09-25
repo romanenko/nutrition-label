@@ -127,6 +127,8 @@ These are proposed extensions to the six current label rows; they have not been 
 
 Tracking signals belong alongside the monetization breakdown above. Personal-data monetization or long-term notification frequency may require separate, dated product disclosures or a longer observation period. Do not silently substitute a company's reputation for inspection of the current page.
 
+The first browser check on TikTok exposed an extraction gap: notification permission wording was absent, but an Activity navigation button had a visible unread-count badge. Detector version 2 recognizes positive numeric badges on named Notifications, Activity or Alerts controls, including badges excluded from the control's accessible name. Hidden badges, zero counts, empty navigation, settings links and message inbox counters do not qualify. This supplies a visible notification cue for the estimated grade; it does not establish repeated delivery, push permission or harmful intent. The implementation uses general control semantics, with no domain-specific grade override.
+
 ## Giving a text-only model enough context
 
 The model does not need a screenshot to interpret facts that browser code can measure. Send a compact semantic record of a candidate region: text, roles, actions, relationships and precomputed observations. Do not send raw HTML or the entire page by default.

@@ -1,0 +1,74 @@
+NUTRITION LABEL — CHROME PREVIEW
+
+This package is ready to load in Chrome 120 or newer on desktop.
+You do not need Node.js, a development server or an API key to try local detection.
+
+INSTALL
+
+1. Extract nutrition-label-chrome.zip.
+   macOS: double-click the ZIP. Windows: right-click and choose Extract All.
+2. Move the extracted files somewhere you will keep them, such as Documents.
+   Find the nutrition-label folder containing manifest.json. Select this folder
+   in step 4, not the ZIP or a parent folder.
+3. Type chrome://extensions into Chrome's address bar. Turn on Developer mode.
+4. Click Load unpacked and select the nutrition-label folder.
+5. Click Chrome's puzzle-piece icon and pin Nutrition Label.
+6. Visit a regular website and click the Nutrition Label icon.
+
+TRY IT
+
+Opening the popup starts a two-minute observation window. Scroll or use the page
+normally, then reopen the popup to see findings. Enable "Assess this site as I
+browse" for ongoing observations; Chrome asks for that site's access.
+
+Serving size counts distinct observed pages on the origin. Reopening or reloading
+the same page does not increase that count. Each row shows an average: a detection
+is 1, an assessed non-detection is 0, and unknown pages are excluded. Unknown rows
+are hidden. The A-F grade estimates which of four attention categories are present.
+Inspection details explain the findings and grade contributions.
+
+OPTIONAL AI
+
+Open "Jev & settings" to add your own TypeSafe/Jev API key. Keys are never included
+in this download. Session storage is the default; encrypted device storage needs
+an unlock passphrase. Saving a key does not call the API. Test connection uses
+your API credits. Enable Jev classification and, separately, sampled feed text
+only for page content you want to send to TypeSafe. Local detection works with AI off.
+
+UPDATE OR REMOVE
+
+To update, download a newer ZIP and replace the files INSIDE the same nutrition-label
+folder. On chrome://extensions, click the extension's Reload button, then refresh
+website tabs. Keeping the folder path preserves the unpacked extension's identity.
+Reloading clears session-only keys; unlock an encrypted key or enter a session key
+again. Updates are manual because this preview is not installed from the Web Store.
+
+To uninstall, click Remove for Nutrition Label on chrome://extensions. You can then
+delete the extracted folder. Reset this site / Clear all assessments inside the
+extension clears observations separately from Forget key.
+
+IF SOMETHING DOES NOT WORK
+
+- "Manifest file is missing": choose the extracted folder containing manifest.json.
+- No result on chrome:// pages or the Chrome Web Store: use a regular website.
+- No AI rows: add/unlock a working key and enable the relevant analysis preferences.
+- No observed autoplay or infinite scroll: keep browsing while observation is active.
+  Short scans, embedded frames and unlabeled controls can remain unassessed.
+- If developer mode is blocked by your organization's Chrome policy, ask its admin.
+
+DOWNLOADS AND SOURCES
+
+https://github.com/romanenko/nutrition-label/releases/latest
+The repository and downloads are public. You can download and share this ZIP
+without a GitHub account. No browsing data or key is bundled.
+
+The idea and research foundation come from Vlada Bortnik's articles:
+
+Good for you social tech can also be good for business (July 30, 2024)
+https://www.linkedin.com/pulse/good-you-social-tech-can-also-business-vlada-bortnik-she-her--xenrc/
+
+The Big Tobacco moment / nutrition-label and A-F proposal (October 28, 2024)
+https://www.linkedin.com/pulse/weve-been-talking-big-techs-tobacco-moment-years-lets-vlada-jpt2c
+
+This is an experimental detector. Visible signals do not prove a website's intent,
+business model or safety. The grade describes the observed sample.
