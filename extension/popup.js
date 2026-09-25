@@ -24,7 +24,8 @@ function render(data) {
   const url = new URL(origin);
   $("#website").textContent = `${url.protocol === "http:" ? "http://" : ""}${url.host}`;
   $("#serving-count").textContent = `${summary.visited} ${summary.visited === 1 ? "page" : "pages"}`;
-  $("#coverage").textContent = `${summary.assessed} of ${summary.visited} pages locally assessed`;
+  $("#coverage").textContent = summary.visited ? `Local coverage: ${Math.round(summary.assessed / summary.visited * 100)}%` : "No pages assessed";
+  $("#coverage").title = `${summary.assessed} of ${summary.visited} pages locally assessed`;
   $("#analysis-status").textContent = summary.assessed ? "Observations available" : "Waiting for page";
   enabled = summary.enabled; $("#follow").checked = enabled;
   $("#finding-details").replaceChildren();
@@ -35,18 +36,17 @@ function render(data) {
     td.parentElement.hidden = value.assessed === 0;
     if (value.assessed === 0) continue;
     visibleCriteria++;
-    td.textContent = value.assessed ? `${value.detected} of ${value.assessed}` : "Unknown";
+    const average = Math.round(value.detected / value.assessed * 100);
+    const pageCount = `${value.detected} of ${value.assessed} assessed pages`;
+    td.textContent = `${average}%`;
+    td.setAttribute("aria-label", `Detected on ${average}% of assessed pages`);
     td.classList.toggle("negative", criterion.negative === true && value.detected > 0);
-    td.title = value.detail;
-    if (value.probability !== null) {
-      const small = document.createElement("span"); small.className = "probability";
-      small.textContent = `${Math.round(value.probability * 100)}% Jev`; td.append(small);
-    }
+    td.title = `${pageCount}. ${value.detail}`;
     const li = document.createElement("li");
     const strong = document.createElement("strong"); strong.textContent = `${criterion.label}: `;
-    li.append(strong, document.createTextNode(value.detail));
+    li.append(strong, document.createTextNode(`${pageCount}. ${value.detail}`));
     if (value.unknown) li.append(document.createTextNode(` ${value.unknown} page(s) unassessed for this criterion.`));
-    if (value.probability !== null) li.append(document.createTextNode(" Jev probability is experimental, not a calibrated accuracy or severity score."));
+    if (value.probability !== null) li.append(document.createTextNode(` Jev probability: ${Math.round(value.probability * 100)}%. This is experimental, not a calibrated accuracy or severity score.`));
     $("#finding-details").append(li);
   }
   $("#criteria-table").hidden = visibleCriteria === 0;

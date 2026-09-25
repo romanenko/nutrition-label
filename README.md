@@ -26,7 +26,7 @@ The **Website Facts** popup collects real observations. It combines local DOM an
 
 Serving size counts distinct pages visited while observation is active on the exact origin (scheme, host and port). Reloads and revisits update the same page. Known tracking parameters and ordinary anchors are ignored; meaningful queries and hash-router paths are retained. Raw paths are stored only as device-keyed digests.
 
-The label shows **detected pages / pages assessed for that criterion**. Criteria that remain entirely unknown are hidden; assessed criteria with zero detections stay visible. Inspection details include remaining coverage gaps for visible rows. Local assessment coverage means a DOM snapshot was collected, not that every criterion was resolved. Positive findings remain in that page's sample until reset, even if a banner disappears or playback stops. This is an accumulating observation record, not a live absence guarantee or an assessment of the entire website.
+The label shows an **average per page**, expressed as the percentage of assessed pages where a criterion was detected (for example, 1 of 3 becomes 33%). Unknown pages are excluded from that criterion's denominator. Criteria that remain entirely unknown are hidden; assessed criteria with zero detections stay visible. Inspection details retain exact page counts, Jev probabilities and coverage gaps. Local coverage is the percentage of visited pages with a collected DOM snapshot, not a measure of whether every criterion was resolved. Positive findings remain in that page's sample until reset, even if a banner disappears or playback stops. This is an accumulating observation record, not a live absence guarantee or an assessment of the entire website.
 
 ## Local development with hot reload
 
