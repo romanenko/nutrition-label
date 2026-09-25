@@ -7,7 +7,7 @@ function showNotice(message) {
 }
 
 async function showCurrentWebsite() {
-  // Opening the HTML directly is a useful preview, without extension APIs.
+  // The browser preview has no extension APIs.
   if (!globalThis.chrome?.tabs?.query) {
     website.textContent = "Label preview";
     showNotice("Open Nutrition Label from the Chrome toolbar to see the current website.");

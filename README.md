@@ -15,17 +15,42 @@ The idea is to inspect the page the user is visiting, use an AI model to help cl
 
 There is no page analysis, feed detection, AI integration, or scoring yet. The displayed criteria are a starting point for discussion, not a settled grading system.
 
-## Try it in Chrome
+## Local development with hot reload
 
-1. Open `chrome://extensions`.
-2. Enable **Developer mode**.
-3. Click **Load unpacked** and select this repository's **`extension`** folder.
-4. Pin **Nutrition Label** using Chrome's extensions menu.
-5. Visit a website and click the extension icon.
+Use Node.js 24 (or Node.js 22.12+) and npm. If you use `fnm`, run `fnm use` in this folder to select the version in `.node-version`.
 
-No package installation, build step, API key, or server is needed. After changing files, reload the extension on `chrome://extensions` and reopen the popup.
+```sh
+npm install
+npm run dev
+```
 
-For a layout-only preview, open `extension/popup.html` directly in a browser. It displays **Label preview** because Chrome's extension APIs are unavailable there.
+Keep that terminal running. Vite and CRXJS watch the source in `extension/` and generate a development extension in `dist/dev/`.
+
+### Load it into your Chrome once
+
+1. Open `chrome://extensions` and enable **Developer mode**.
+2. Click **Load unpacked** and select **`dist/dev`** inside this repository. On macOS, press **Command + Shift + G** in the folder picker to paste its full path.
+3. Pin **Nutrition Label (Dev)** using Chrome's extensions menu.
+4. Visit a website and click the extension icon.
+
+If you loaded the original `extension/` folder earlier, disable that copy so you're testing **Nutrition Label (Dev)**. Edit files in `extension/`, not the generated `dist/dev/` folder.
+
+### Iterating together
+
+- **Layout preview:** open [http://127.0.0.1:5173/popup.html](http://127.0.0.1:5173/popup.html) in a browser or the Codex browser panel. It stays open and updates as we save changes. It displays **Label preview** because it cannot access Chrome's extension APIs.
+- **Real extension:** open the toolbar popup on the website you want to inspect. CSS updates live; HTML and JavaScript changes refresh the popup. Chrome closes toolbar popups when they lose focus, so click the icon again if it closes while editing.
+- **Manifest and background changes:** these may reload the entire extension. Reopen the popup afterward. If Chrome shows an extension error after changing permissions, reload it on `chrome://extensions`.
+- **After a restart:** run `npm run dev` again. If the extension isn't reconnecting, reload **Nutrition Label (Dev)** on `chrome://extensions`.
+
+The development server uses the fixed local address above. If port 5173 is occupied, it fails rather than silently changing ports. Stop the other process using that port, then restart `npm run dev`.
+
+### Test without a development server
+
+```sh
+npm run build
+```
+
+Load **`dist/release`** as an unpacked extension. This standalone build has no hot reload or dependency on the development server. Development and release outputs are separate, so building does not overwrite the copy loaded for local development. No AI API key is needed for either version.
 
 ## Product direction
 
@@ -66,9 +91,9 @@ No weights, thresholds, score direction, or model provider are chosen yet. Unkno
 
 ## Implementation
 
-Plain HTML, CSS, and JavaScript using Chrome's Manifest V3. The only requested permission is `activeTab`, used to read the current tab's URL after the extension is invoked. The popup displays only its hostname.
+Plain HTML, CSS, and JavaScript using Chrome's Manifest V3, with Vite and CRXJS for development and packaging. The release extension's only requested permission is `activeTab`, used to read the current tab's URL after the extension is invoked. The popup displays only its hostname.
 
-This version has no content scripts, background worker, network requests, AI calls, analytics, or stored browsing data. A future analysis feature should request only the access it needs, explain any data sent to a model, and keep provider secrets out of the extension bundle.
+The release version has no content scripts, background worker, network requests, AI calls, analytics, or stored browsing data. During development, CRXJS adds a reload worker and access to the local development server; these are excluded from the release build. A future analysis feature should request only the access it needs, explain any data sent to a model, and keep provider secrets out of the extension bundle.
 
 ```text
 extension/
@@ -77,6 +102,9 @@ extension/
   popup.css         Black-and-white food-label styling
   popup.js          Active website context and fallback messages
   icons/            Toolbar icons and their SVG source
+vite.config.js     Dev server, extension bundling, and output directories
+dist/dev/          Generated extension for hot reload (gitignored)
+dist/release/      Generated standalone extension (gitignored)
 ```
 
 ### Manual checks
@@ -85,7 +113,7 @@ extension/
 2. Open it on two different websites and check that the hostname follows the active tab.
 3. Verify that every criterion says **Not assessed**, the score is an em dash, and the status says **Not analyzed**.
 4. Open it on a browser page such as `chrome://extensions`; confirm that an unavailable-page message appears and no assessment is fabricated.
-5. Open `extension/popup.html` directly; confirm that it shows a layout preview.
+5. Open the local preview URL while `npm run dev` is running; confirm that it shows a layout preview and updates when source files change.
 6. Inspect the popup and check that no JavaScript errors appear.
 
-Chrome references: [toolbar popups](https://developer.chrome.com/docs/extensions/reference/api/action), [the activeTab permission](https://developer.chrome.com/docs/extensions/develop/concepts/activeTab), and [loading an unpacked extension](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world).
+References: [CRXJS setup](https://crxjs.dev/guide/installation/from-scratch/), [toolbar popups](https://developer.chrome.com/docs/extensions/reference/api/action), [the activeTab permission](https://developer.chrome.com/docs/extensions/develop/concepts/activeTab), and [loading an unpacked extension](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world).
