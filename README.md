@@ -54,18 +54,22 @@ Load **`dist/release`** as an unpacked extension. This standalone build has no h
 
 ## Product direction
 
-Start small and develop the criteria together. The eventual label should show what was observed, how confidently it was classified, how each criterion was graded, and exactly how those grades contributed to an overall score.
+Start small and develop the criteria together. The eventual label should show what was observed, how confidently it was classified, how each criterion was graded, and how those grades contributed to an overall score. A high-probability classification is enough to show a finding; written explanations are optional.
+
+The original inspiration is [Vlada Bortnik's proposal for technology nutrition labels](https://www.linkedin.com/pulse/weve-been-talking-big-techs-tobacco-moment-years-lets-vlada-jpt2c). Our [detection research](docs/detection-research.md) proposes a combination of browser measurements, rules and text-only Jev classification, with additional criteria inspired by the article. It is a research plan, not implemented detection.
+
+Two related designs describe [an evolving label across visited pages on an origin](docs/origin-assessments.md) and [user-provided Jev keys](docs/jev-key-storage.md). Serving size will reflect distinct pages visited while assessment is enabled, with coverage shown separately. Jev access will use the user's own key, kept in memory for a browser session or saved encrypted with a passphrase. Neither feature is implemented yet.
 
 | Candidate criterion | Questions to explore later |
 | --- | --- |
-| Content feed | Does the page contain a feed? Is it chronological, recommended, or personalized? |
-| Infinite scroll | Does more content load automatically? Is there a clear stopping point? |
-| Autoplay media | Does video or audio start without an explicit play action? Is it muted and easy to stop? |
+| Content feed | Does the page contain a feed? Subcriteria include infinite scroll, likes/hearts/votes/ratings, political topics, hateful language, and provocative or outrage-oriented framing. |
+| Infinite scroll, within Content feed | Does more content load automatically? Is there a clear stopping point? |
+| Autoplay media | Does video or audio start without an explicit play action? Observed unsolicited video autoplay is a negative factor, including muted and automatic next-video playback; severity remains to be defined. |
 | Distracting banners | Do overlays, sticky banners, or moving elements interrupt reading or obstruct content? |
 | Attention monetization | What visible evidence suggests ads, sponsored content, or engagement incentives? Is sponsorship disclosed? |
 | Deceptive prompts | Do choices use misleading labels, unequal prominence, repeated pressure, or unnecessary friction? |
 
-**A feed's presence is a fact, not automatically a negative grade.** Context matters: an intentionally opened feed, user-started video, and unsolicited autoplay should not be treated as equivalent. Visible evidence also cannot conclusively establish a website's business model or intent.
+**A feed's presence is a fact, not automatically a negative grade.** Political subject matter, identity-targeted hateful language, and provocative framing are separate classifications. Context matters: an intentionally opened feed, user-started video, and unsolicited autoplay should not be treated as equivalent. Visible evidence also cannot conclusively establish a website's business model or intent.
 
 ### Grading questions for a later iteration
 
@@ -76,7 +80,7 @@ Start small and develop the criteria together. The eventual label should show wh
 - How should unknowns, limited coverage, and low-confidence classifications be displayed?
 - What should be evaluated per page, per visit, or across an entire website?
 
-No weights, thresholds, score direction, or model provider are chosen yet. Unknown or unassessed criteria must remain distinguishable from an observed absence. The extension should explain its evidence and avoid presenting AI inferences as proven intent.
+Jev is the planned text classifier. No weights, thresholds, or score direction are chosen yet. Unknown or unassessed criteria must remain distinguishable from an observed absence. The extension should retain supporting signals for evaluation and avoid presenting AI inferences as proven intent.
 
 ## Roadmap
 
@@ -84,9 +88,10 @@ No weights, thresholds, score direction, or model provider are chosen yet. Unkno
 - [x] Build a minimal extension that displays the nutrition-style label on click.
 - [ ] Refine the criteria and agree on definitions together.
 - [ ] Collect page signals on demand, starting with a small set of observable facts such as feed presence.
-- [ ] Choose an AI model and a privacy approach for classifying ambiguous patterns.
+- [ ] Implement Jev access with user-provided keys and minimal, redacted model inputs.
+- [ ] Track distinct visited pages per origin and update the label as assessments arrive.
 - [ ] Design per-criterion grades and a transparent overall score.
-- [ ] Show evidence, confidence, and the contribution of each criterion to the score.
+- [ ] Show confidence and the contribution of each criterion to the score, with optional supporting details.
 - [ ] Validate against varied pages and iterate on false positives.
 
 ## Implementation
