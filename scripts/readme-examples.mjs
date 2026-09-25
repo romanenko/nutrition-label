@@ -12,8 +12,8 @@ import { gradeAssessment } from "../extension/lib/grading.js";
 const root = new URL("../", import.meta.url);
 const output = new URL("docs/examples/", root);
 const examples = [
-  { id: "reading-with-ads", origin: "https://reading.example", grade: "B", pages: [
-    { ui: { ads: 1, controls: 1 } }, { ui: { controls: 1 } }, { ui: { ads: 1, controls: 1 } },
+  { id: "calm-reading", origin: "https://reading.example", grade: "A", pages: [
+    { ui: { controls: 1 } }, { ui: { controls: 1 } }, { ui: { controls: 1 } },
   ] },
   { id: "recommended-feed", origin: "https://feed.example", grade: "D", pages: [
     { feed: { explicit: true, reactions: 4 }, infinite: { observed: true }, ui: { ads: 1, recommendations: 1, controls: 1 } },
@@ -37,8 +37,8 @@ for (const path of ["popup.css", "lib/model.js", "lib/grading.js"]) {
 }
 for (const example of examples) {
   const pages = Object.fromEntries(example.pages.map((input, index) => {
-    const snapshot = sanitizeSnapshot(input, {});
-    return [index, { assessedAt: 1, lastVisitedAt: index + 1, criteria: ruleFindings(snapshot) }];
+    const snapshot = sanitizeSnapshot({ ...input, coverage: { ready: true }, media: { elements: input.media?.observed ? 1 : 0, ...input.media } }, {});
+    return [index, { assessedAt: 1, lastVisitedAt: index + 1, coverage: snapshot.coverage, criteria: ruleFindings(snapshot) }];
   }));
   const data = { origin: example.origin, preferences: { ai: false }, summary: summarize({ pages }) };
   if (gradeAssessment(data.summary).letter !== example.grade) throw new Error(`Unexpected example grade: ${example.id}`);

@@ -20,7 +20,8 @@ function renderGrade(summary) {
   const score = $("#score-value");
   score.textContent = grade.letter || "—";
   score.dataset.grade = grade.letter || "";
-  const note = grade.letter ? `Estimated · ${grade.count} ${grade.count === 1 ? "category" : "categories"}${grade.partial ? " · partial" : ""}` :
+  const note = grade.letter === "A" ? `${grade.partial ? "Provisional" : "Estimated"} · No harmful categories detected` :
+    grade.letter ? `Estimated · ${grade.count} ${grade.count === 1 ? "category" : "categories"}${grade.partial ? " · partial" : ""}` :
     summary.assessed ? "More evidence needed to assign a grade." : "Analyze a page to see its grade.";
   $("#score-note").textContent = note;
   score.setAttribute("aria-label", grade.letter ? `Estimated grade ${grade.letter}. ${note}` : "Not enough evidence to grade");

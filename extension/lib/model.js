@@ -1,4 +1,4 @@
-export const DETECTOR_VERSION = "2";
+export const DETECTOR_VERSION = "3";
 export const MODEL = "jev-1.13.0";
 export const THRESHOLD = 0.9;
 export const CRITERIA = [
@@ -83,6 +83,7 @@ export function summarize(assessment) {
   }
   return {
     visited: pages.length, assessed: pages.filter(page => page.assessedAt).length,
+    partialCoverage: pages.some(page => !page.assessedAt || page.coverage?.ready === false || page.coverage?.limited || page.coverage?.frames > 0),
     criteria, updatedAt: assessment?.updatedAt || null, enabled: Boolean(assessment?.enabled),
     latest: pages.sort((a, b) => b.lastVisitedAt - a.lastVisitedAt)[0] || null,
   };

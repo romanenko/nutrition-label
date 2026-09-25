@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Nutrition Label",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "minimum_chrome_version": "120",
   "description": "A nutrition-style label for website attention patterns, with local observations and optional Jev classification.",
   "permissions": ["activeTab", "scripting", "storage"],

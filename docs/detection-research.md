@@ -228,7 +228,7 @@ Retain distinct concepts internally:
 | `severity` | Separate impact rubric, still to be designed. |
 | `provenance` | Local evidence references, detector/prompt version and resolved model version for debugging and evaluation. |
 
-A high-probability result can be shown with a short criterion label and probability alone. Optional details can come later. Unknowns, request failures and inaccessible content must not turn into clean grades. We should defer an overall grade when coverage is insufficient.
+A high-probability result can be shown with a short criterion label and probability alone. Optional details can come later. Unknowns remain unassessed in the criterion averages. As of detector version 3, a readable page with zero detected harmful categories receives A, marked provisional when behavior or embedded content remains unassessed. This rewards the observed absence of harmful signals while retaining uncertainty. Blank, loading, failed and truncated scans without usable evidence stay ungraded. A full scan with no feed or video can record those behaviors as not observed; it does not require proving they can never appear.
 
 Avoid combining probabilities from correlated cards with a naive independence formula. Count distinct detected units in code and calibrate any page-level aggregation separately. Likewise, autoplay in a feed can contribute to multiple descriptions without receiving duplicate penalties later.
 

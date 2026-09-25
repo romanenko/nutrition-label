@@ -214,7 +214,7 @@ export function createCollector(send = message => chrome.runtime.sendMessage(mes
       feed: { explicit: feeds.length > 0, candidate: feedCandidate, items: visibleCards.length,
         reactions: controls.filter(el => inFeed(el) && reaction.test(names.get(el))).length,
         ratings: controls.filter(el => inFeed(el) && rating.test(names.get(el))).length },
-      media: { ...mediaCounts }, infinite: { observed: continuation, scrolled },
+      media: { ...mediaCounts, elements: videos.length }, infinite: { observed: continuation, scrolled },
       ui: { overlays: overlays.length, obstruction: covered / 100, repeatedPrompts,
         ads: new Set(labels.filter(text => /^(ad|advertisement|sponsored|promoted|paid partnership|sponsored content)(\s*[:·|].*)?$/i.test(text))).size,
         recommendations: labels.filter(text => /^(for you|recommended( for you)?|suggested( for you)?|because you (watched|liked).*)$/i.test(text)).length,
@@ -226,6 +226,8 @@ export function createCollector(send = message => chrome.runtime.sendMessage(mes
         controls: labels.filter(text => control.test(text)).length },
       coverage: { frames: shown.filter(el => el.matches("iframe,frame")).length,
         unlabeled: controls.filter(el => !names.get(el)).length, limited: all.length >= 5000,
+        ready: document.readyState === "complete" && shown.some(el => el.matches("img,video") ||
+          [...el.childNodes].some(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim())),
         durationSeconds: Math.round((Date.now() - startedAt) / 1000), privateContext: privateContext() },
       regions: [], items: [],
     };

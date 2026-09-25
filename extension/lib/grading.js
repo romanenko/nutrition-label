@@ -20,8 +20,10 @@ export function gradeAssessment(summary) {
   });
   const count = categories.filter(category => category.result === "detected").length;
   const unknown = categories.filter(category => category.result === "unknown").length;
-  // Do not award an A to an empty or unresolved scan. Positive signals can
-  // establish a provisional grade without treating the missing categories as clean.
-  const letter = summary.assessed > 0 && (count > 0 || unknown === 0) ? LETTERS[count] : null;
-  return { letter, count, unknown, partial: unknown > 0, categories };
+  // Grade what has been observed, including zero harmful categories. Untested
+  // behavior keeps the grade provisional; an empty/failed scan has no evidence.
+  const hasEvidence = count > 0 || categories.some(category =>
+    category.criteria.some(id => summary.criteria?.[id]?.assessed > 0));
+  const letter = summary.assessed > 0 && hasEvidence ? LETTERS[count] : null;
+  return { letter, count, unknown, partial: unknown > 0 || summary.partialCoverage === true, categories };
 }

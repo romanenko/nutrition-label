@@ -13,17 +13,17 @@ Three illustrations using the real popup and synthetic observations on fictional
 
 <table>
   <tr>
-    <th>Reading with ads</th>
+    <th>Calm reading</th>
     <th>Recommended feed</th>
     <th>All four categories</th>
   </tr>
   <tr>
-    <td valign="top"><a href="docs/examples/reading-with-ads.png"><img src="docs/examples/reading-with-ads.png" width="280" alt="Example B grade, partial: ads detected on two of three pages, average 0.67." /></a></td>
+    <td valign="top"><a href="docs/examples/calm-reading.png"><img src="docs/examples/calm-reading.png" width="280" alt="Example A grade: three readable pages with no harmful categories detected and stopping controls available." /></a></td>
     <td valign="top"><a href="docs/examples/recommended-feed.png"><img src="docs/examples/recommended-feed.png" width="280" alt="Example D grade: ads, recommendations and infinite scroll indicate three attention categories." /></a></td>
     <td valign="top"><a href="docs/examples/all-four-categories.png"><img src="docs/examples/all-four-categories.png" width="280" alt="Example F grade: all four categories indicated, including autoplay and unread notification badges." /></a></td>
   </tr>
   <tr>
-    <td><strong>B · partial</strong> — one category observed</td>
+    <td><strong>A</strong> — no harmful categories observed</td>
     <td><strong>D</strong> — three categories observed</td>
     <td><strong>F</strong> — all four categories observed</td>
   </tr>
@@ -54,11 +54,11 @@ The **Website Facts** popup collects real observations. It combines local DOM an
 | Criterion | Implemented method |
 | --- | --- |
 | Content feed | Explicit feed semantics; repeated article/card candidates; Jev classification of ambiguous structure. |
-| Infinite scroll | New item identities after a near-end scroll, without a recent Load more action. |
+| Infinite scroll | New item identities after a near-end scroll, without a recent Load more action. No feed in a complete scan counts as not observed. |
 | Likes, hearts, reactions | Named interactive controls within feed candidates. |
 | Stars, ratings, votes | Named interactive rating/vote controls within feed candidates. |
 | Political topics, hateful language, provocative framing | Three independent Jev questions for sampled visible feed items; requires separate feed-text opt-in. |
-| Autoplay video | Starts without a matching recent play action. Muted starts count; already-playing video and autoplay attributes alone remain unknown. |
+| Autoplay video | Starts without a matching recent play action. Muted starts count; already-playing video and autoplay attributes alone remain unknown. No video elements in a complete scan counts as not observed. |
 | Obstructive banners | Large visible fixed/sticky panels and dialogs, with approximate viewport obstruction. |
 | Ads and sponsorship | Visible ad/sponsorship labels. |
 | Deceptive prompts | Jev classifies wording from candidate prompts and action labels. |
@@ -75,7 +75,7 @@ The **Website Facts** popup collects real observations. It combines local DOM an
 | Persistent notifications | Notification request wording or an unread notification/activity badge; frequency and push delivery remain unverified |
 | Infinite engagement | Infinite scroll, unsolicited autoplay, or streaks/rewards; together they count once |
 
-The grade is an **estimate**: these signals do not verify a company's business model, its ranking algorithm or notification persistence. An empty or unresolved scan cannot earn A. With detected categories and missing evidence, the grade is marked partial and may worsen as more categories are observed. A requires all mapped signals to have been assessed without detections; it still describes the observed sample, not proof that a website is harmless. Inspection details show the four contributions and link to the article. No weights or probability averaging are used for the letter grade.
+The grade is an **estimate**: these signals do not verify a company's business model, its ranking algorithm or notification persistence. **A rewards an analyzed page with no harmful categories detected.** A readable page with no feed or video can earn A immediately, without Jev. If a feed, video or embedded frame remains unassessed, the label shows **Provisional A** while keeping those findings unknown. Blank, loading, failed or truncated scans without usable evidence stay ungraded. Grades can worsen as more categories are observed; positive controls do not cancel detected harms. Inspection details show the four contributions and link to the article. Grades describe the observed sample, not proof that an entire website is harmless. No weights or probability averaging are used for the letter grade.
 
 Other criteria remain descriptive and do not add grade penalties. A feed or political topic alone does not reduce the grade. Observed unsolicited autoplay contributes to the infinite-engagement category. Model probability is experimental, not a calibrated accuracy, severity or harm score. Findings use a 90% positive threshold, results at 10% or below can count as not observed, and the middle remains unknown. A written AI explanation is not required.
 
@@ -102,7 +102,7 @@ Keep the terminal running. Vite and CRXJS build into `dist/dev` as you edit `ext
 4. Open a regular website and click the extension. It begins a two-minute observation window. Scroll and use the page normally, then reopen the popup to see findings.
 5. Enable **Assess this site as I browse** to collect on future visits and route changes. Chrome asks for that site's access and navigation permission. Other origins need their own opt-in.
 
-If you already have the extension loaded, **reload it once on `chrome://extensions` after this upgrade**, then reload the website tab. New permissions and the collector require a fresh extension instance.
+If you already have the extension loaded, **reload it once on `chrome://extensions` after this upgrade**, then reload the website tab so the updated collector runs.
 
 - **Layout preview:** [http://127.0.0.1:5173/popup.html](http://127.0.0.1:5173/popup.html). Updates on save; Chrome extension APIs are unavailable here. Settings preview disables credential entry.
 - **Real extension:** CSS updates live; JavaScript/HTML changes refresh the popup. Reopen it if Chrome closes it. Background/manifest changes can reload the whole extension; refresh the inspected page to replace its collector.
@@ -158,7 +158,7 @@ npm test
 npm run build
 ```
 
-Tests cover encrypted storage and failure states, content-script authorization, navigation/page identity, reset and late responses, input bounds, redaction, uncertainty, mocked Jev transport, all five grade boundaries, category deduplication, incomplete grading coverage, and notification badge positives/false positives. They require no API key and make no paid requests.
+Tests cover encrypted storage and failure states, content-script authorization, navigation/page identity, reset and late responses, input bounds, redaction, uncertainty, mocked Jev transport, all five grade boundaries, category deduplication, positive and provisional A grades, incomplete grading coverage, and notification badge positives/false positives. They require no API key and make no paid requests.
 
 For manual checks, visit [the local fixture](http://127.0.0.1:5173/fixture.html?page=one) while Vite runs. This synthetic page is excluded from the release build. Avoid editing source during a navigation test because hot reload resets the fixture.
 

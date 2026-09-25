@@ -27,6 +27,11 @@ is 1, an assessed non-detection is 0, and unknown pages are excluded. Unknown ro
 are hidden. The A-F grade estimates which of four attention categories are present.
 Inspection details explain the findings and grade contributions.
 
+A means no harmful categories were detected in the observed sample. A readable
+page with no feed or video can earn A without AI. Provisional A means some behavior
+or embedded content remains unassessed. Empty or failed scans stay ungraded, and
+the grade updates if harmful patterns appear later.
+
 OPTIONAL AI
 
 Open "Jev & settings" to add your own TypeSafe/Jev API key. Keys are never included
