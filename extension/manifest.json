@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Nutrition Label",
+  "version": "0.1.0",
+  "description": "A nutrition-style label for a website's impact on your attention. An early prototype; analysis is coming next.",
+  "permissions": ["activeTab"],
+  "action": {
+    "default_title": "View Website Facts",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  }
+}

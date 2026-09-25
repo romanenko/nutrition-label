@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Website Facts · Nutrition Label</title>
+    <link rel="stylesheet" href="popup.css" />
+    <script src="popup.js" defer></script>
+  </head>
+  <body>
+    <main class="label" aria-labelledby="label-title">
+      <header>
+        <h1 id="label-title">Website Facts</h1>
+        <p class="website" id="website" aria-live="polite">Current website</p>
+        <p class="serving"><strong>Serving size</strong><strong>1 page</strong></p>
+      </header>
+
+      <section class="score" aria-labelledby="score-title">
+        <p class="eyebrow">Amount per serving</p>
+        <div class="score-line">
+          <h2 id="score-title">Overall score</h2>
+          <span class="score-value" aria-label="Not assessed">—</span>
+        </div>
+      </section>
+
+      <table aria-label="Website criteria, not yet assessed" aria-describedby="analysis-note">
+        <thead>
+          <tr>
+            <th scope="col">Per page</th>
+            <th scope="col">Assessment*</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Content feed</th>
+            <td>Not assessed</td>
+          </tr>
+          <tr class="sub-criterion">
+            <th scope="row">Infinite scroll</th>
+            <td>Not assessed</td>
+          </tr>
+          <tr>
+            <th scope="row">Autoplay media</th>
+            <td>Not assessed</td>
+          </tr>
+          <tr>
+            <th scope="row">Distracting banners</th>
+            <td>Not assessed</td>
+          </tr>
+          <tr>
+            <th scope="row">Attention monetization</th>
+            <td>Not assessed</td>
+          </tr>
+          <tr>
+            <th scope="row">Deceptive prompts</th>
+            <td>Not assessed</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <footer>
+        <p class="analysis-status"><strong>Analysis status</strong><span>Not analyzed</span></p>
+        <p class="footnote" id="analysis-note">* These are proposed criteria, not findings about this page. Page analysis and scoring are coming next.</p>
+      </footer>
+    </main>
+    <p class="page-notice" id="page-notice" role="status" hidden></p>
+  </body>
+</html>
