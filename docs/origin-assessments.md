@@ -1,6 +1,6 @@
 # Serving size across a website
 
-Design date: September 24, 2026. Implemented in version 0.2: exact-origin assessments, keyed page identities, distinct serving size, per-criterion coverage, optional following and independent reset. Overall scores remain deferred. The [README](../README.md) describes current behavior and verification.
+Design date: September 24, 2026. Implemented in version 0.2: exact-origin assessments, keyed page identities, distinct serving size, per-criterion coverage, optional following and independent reset. Overall grades now use Vlada's four-category A–F scale. The [README](../README.md) describes the proxy mapping, incomplete grades and verification.
 
 Implementation choices: local coverage means at least one collected snapshot; it does not imply semantic/media coverage. Positive findings accumulate until reset. Page identities ignore common tracking parameters and ordinary anchors, retaining meaningful queries and hash-router routes. Collection is bounded to 1,000 pages and approximately 7 MB of serialized records. Automatic rubric migration, retention/decay and comprehensive back/forward-cache evaluation remain future work.
 
@@ -14,14 +14,14 @@ Example label:
 Website Facts
 example.com
 Serving size              5 pages visited
-Assessment coverage       4 of 5 pages
-Overall score             Pending grading rules
-Autoplay media            Detected on 2 of 4 assessed pages
+Local coverage            80%
+Overall grade             C (estimated: 2 categories)
+Autoplay video            0.5 average per assessed page
 ```
 
-These are invented numbers illustrating the design. Each criterion has its own coverage: a page may be assessed for banners while autoplay remains unknown. The overall coverage line needs a defined minimum assessment contract before implementation; it must not imply every criterion was observed equally.
+These are invented numbers illustrating the design. Each criterion has its own coverage: a page may be assessed for banners while autoplay remains unknown. Local coverage requires a collected DOM snapshot; it does not imply every criterion was resolved.
 
-Update the origin label whenever a new page is visited or its assessment changes. A future overall score should be recomputed from the latest eligible page findings; simply incrementing serving size must not improve or worsen it. A locked Jev key, failed request or unsupported frame adds uncertainty, never a clean result.
+Update the origin label whenever a new page is visited or its assessment changes. The overall grade is derived from distinct indicated categories across the accumulated origin findings; simply incrementing serving size does not improve or worsen it. A locked Jev key, failed request or unsupported frame adds uncertainty, never a clean result.
 
 ## Scope and page identity
 
@@ -73,11 +73,11 @@ origin assessment
 
 Store compact classifications and numeric measurements; raw page text and model payloads are transient by default. Internal evidence needed during evaluation can be kept in an explicit local diagnostic session rather than retaining every page's text. Cache results only for matching state and detector/model versions.
 
-For an initial site breakdown, show counts such as **2 of 4 assessed pages**. Keep the probability attached to the specific classification that produced it. Do not average probabilities into a health score, treat cards as independent evidence, or let reloading one page repeatedly dominate the result. Preserve strongest observed findings alongside prevalence so averaging later cannot hide a severe event.
+For the site breakdown, show the arithmetic mean of binary page detections: **2 of 4 assessed pages becomes 0.5**. Exact counts remain in Inspection details. Keep the probability attached to the specific classification that produced it. Do not average probabilities into a health score, treat cards as independent evidence, or let reloading one page repeatedly dominate the result. Preserve strongest observed findings alongside prevalence so averaging cannot hide a severe event.
 
-Keep feed-item denominators separate from page denominators: “3 of 12 sampled items use provocative framing” is different from “2 of 5 pages have a feed.” Likes/hearts/ratings, infinite scroll and feed-content classifications belong under Content feed. Observed unsolicited video autoplay is already designated a negative factor; its weight remains open.
+Keep feed-item denominators separate from page denominators: “3 of 12 sampled items use provocative framing” is different from “2 of 5 pages have a feed.” Likes/hearts/ratings, infinite scroll and feed-content classifications belong under Content feed. Unsolicited autoplay, infinite scroll and streaks contribute one combined infinite-engagement category to the overall grade.
 
-The severity rubric, relative weights, decay policy and overall score formula remain deferred. Version changes should mark incompatible results stale until reassessed, rather than silently mixing different rubrics. Store timestamps so the label can make the age and scope of its sample clear.
+The letter scale is A/B/C/D/F for 0/1/2/3/4 distinct categories; categories count once across all visited pages. No relative weights or averaging of per-page values are used for the grade. Grade estimates with unresolved categories are partial; no observations or unresolved zero-detection scans remain ungraded. Severity weighting, decay and future rubric migration remain deferred. Store timestamps so the label can make the age and scope of its sample clear.
 
 ## Retention and failure behavior
 

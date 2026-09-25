@@ -16,8 +16,8 @@
       </header>
       <section class="score" aria-labelledby="score-title">
         <p class="eyebrow">Across pages visited on this origin</p>
-        <div class="score-line"><h2 id="score-title">Overall score</h2><span class="score-value" aria-label="Grading not yet defined">—</span></div>
-        <p class="score-note">Grading weights are not set yet.</p>
+        <div class="score-line"><h2 id="score-title">Overall grade</h2><span id="score-value" class="score-value" aria-label="Not enough evidence to grade">—</span></div>
+        <p class="score-note" id="score-note">Analyze a page to see its grade.</p>
       </section>
       <p class="coverage" id="coverage">No pages assessed</p>
       <table id="criteria-table" aria-label="Observed website criteria" aria-describedby="analysis-note" hidden>
@@ -27,12 +27,22 @@
       <p id="empty-results" class="empty-results">No criteria assessed yet.</p>
       <footer>
         <p class="analysis-status"><strong>Analysis</strong><span id="analysis-status">Not analyzed</span></p>
-        <p class="footnote" id="analysis-note">* Share of assessed pages with a detection. Unknowns excluded. Unsolicited autoplay is a negative factor.</p>
+        <p class="footnote" id="analysis-note">* Mean per assessed page: detected = 1, not observed = 0. Unknowns excluded. Unsolicited autoplay is a negative factor.</p>
       </footer>
     </main>
     <div class="toolbar"><button id="scan" type="button">Analyze page</button><button id="settings" type="button" class="text-button">Jev & settings</button></div>
     <label class="follow"><input id="follow" type="checkbox" /> Assess this site as I browse</label>
     <p id="page-notice" class="page-notice" role="status" aria-live="polite"></p>
-    <details class="inspection"><summary>Inspection details</summary><p id="ai-status"></p><p id="scope-note"></p><ul id="finding-details"></ul><button id="reset" class="text-button" type="button">Reset this site</button></details>
+    <details class="inspection">
+      <summary>Inspection details</summary>
+      <h3>How the grade works</h3>
+      <p>Vlada’s scale: A = 0 categories, B = 1, C = 2, D = 3, F = 4. Each category counts once across visited pages; per-page averages do not change its weight.</p>
+      <ul id="grade-breakdown"></ul>
+      <p>The grade is an estimate from observable signals. Ads, recommendation wording and notification requests do not verify the business model, ranking algorithm or notification persistence. Other label criteria do not add penalties. Partial grades can worsen as unknown categories are assessed; an unresolved scan cannot earn A.</p>
+      <p>Based on <a href="https://www.linkedin.com/pulse/weve-been-talking-big-techs-tobacco-moment-years-lets-vlada-jpt2c" target="_blank" rel="noopener noreferrer">Vlada Bortnik’s four-category proposal</a>.</p>
+      <h3>Page observations</h3>
+      <p id="ai-status"></p><p id="scope-note"></p><ul id="finding-details"></ul>
+      <button id="reset" class="text-button" type="button">Reset this site</button>
+    </details>
   </body>
 </html>

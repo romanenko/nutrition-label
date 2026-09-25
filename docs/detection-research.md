@@ -4,7 +4,7 @@ Research checked: September 24, 2026. Version 0.2 implements a first subset of t
 
 ## Recommendation
 
-Build a hybrid system: collect browser facts, use rules to find relevant UI regions and directly measurable behavior, then ask Jev narrow questions about their meaning. Combine findings into grades with code once we agree on the grading system.
+Build a hybrid system: collect browser facts, use rules to find relevant UI regions and directly measurable behavior, then ask Jev narrow questions about their meaning. The current implementation now maps observed signals to the article's four categories and uses A/B/C/D/F for 0/1/2/3/4 categories. See the [README](../README.md) for proxy limitations, deduplication and incomplete grading coverage; the broader detector proposals below remain research.
 
 A high-probability classification is sufficient to display a finding. A generated explanation or an exact explanatory quote is **not required**. Keep supporting signals internally so we can investigate mistakes and evaluate detectors. Model probability describes a classification; it is not the severity of a tactic or the probability of harm to the user.
 
@@ -14,7 +14,7 @@ The label accumulates observations across an origin as the user navigates. See [
 
 [Vlada Bortnik's October 2024 article][vlada] proposes labels covering attention monetization, personalized ranking, persistent notifications, and features that prolong engagement. Her examples include feeds, autoplay, social feedback, and streaks; she also proposes a simple grade based on how many categories are present.
 
-For this project, translate those themes into observable facts and separately classified patterns. The methods below are our engineering proposals. We should decide weights later, account for incomplete observation, and avoid counting the same feature several times. A content feed alone remains descriptive, not automatically negative.
+For this project, translate those themes into observable facts and separately classified patterns. The methods below are our engineering proposals. The chosen grade counts each original category once, with no weights, and marks incomplete evidence. A content feed alone remains descriptive, not automatically negative.
 
 ## The original six criteria
 

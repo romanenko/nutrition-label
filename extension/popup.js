@@ -1,7 +1,9 @@
 import { CRITERIA, hostPattern } from "./lib/model.js";
+import { gradeAssessment } from "./lib/grading.js";
 
 const $ = selector => document.querySelector(selector);
 const extension = location.protocol === "chrome-extension:" && Boolean(globalThis.chrome?.runtime?.id);
+const meanFormat = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
 let tabId = null, currentOrigin = null, enabled = false, polling = false;
 const rows = new Map();
 for (const criterion of CRITERIA) {
@@ -13,6 +15,25 @@ for (const criterion of CRITERIA) {
   tr.append(th, td); $("#criteria").append(tr); rows.set(criterion.id, td);
 }
 const notice = text => { $("#page-notice").textContent = text; };
+function renderGrade(summary) {
+  const grade = gradeAssessment(summary);
+  const score = $("#score-value");
+  score.textContent = grade.letter || "—";
+  score.dataset.grade = grade.letter || "";
+  const note = grade.letter ? `Estimated · ${grade.count} ${grade.count === 1 ? "category" : "categories"}${grade.partial ? " · partial" : ""}` :
+    summary.assessed ? "More evidence needed to assign a grade." : "Analyze a page to see its grade.";
+  $("#score-note").textContent = note;
+  score.setAttribute("aria-label", grade.letter ? `Estimated grade ${grade.letter}. ${note}` : "Not enough evidence to grade");
+  $("#grade-breakdown").replaceChildren();
+  for (const category of grade.categories) {
+    const li = document.createElement("li");
+    const label = document.createElement("strong"); label.textContent = `${category.label}: `;
+    const signals = category.signals.map(id => CRITERIA.find(criterion => criterion.id === id).label).join(", ");
+    li.append(label, document.createTextNode(category.result === "detected" ? `indicated by ${signals}. Counts once.` :
+      category.result === "not_observed" ? "No mapped signals observed in assessed pages." : "Not enough evidence yet."));
+    $("#grade-breakdown").append(li);
+  }
+}
 async function send(type, values = {}) {
   const result = await chrome.runtime.sendMessage({ type, tabId, ...values });
   if (!result?.ok) throw new Error(result?.error || "The extension is unavailable. Reload it and try again.");
@@ -20,6 +41,7 @@ async function send(type, values = {}) {
 }
 function render(data) {
   const { summary, origin } = data;
+  renderGrade(summary);
   currentOrigin = origin;
   const url = new URL(origin);
   $("#website").textContent = `${url.protocol === "http:" ? "http://" : ""}${url.host}`;
@@ -36,10 +58,10 @@ function render(data) {
     td.parentElement.hidden = value.assessed === 0;
     if (value.assessed === 0) continue;
     visibleCriteria++;
-    const average = Math.round(value.detected / value.assessed * 100);
+    const average = meanFormat.format(value.detected / value.assessed);
     const pageCount = `${value.detected} of ${value.assessed} assessed pages`;
-    td.textContent = `${average}%`;
-    td.setAttribute("aria-label", `Detected on ${average}% of assessed pages`);
+    td.textContent = average;
+    td.setAttribute("aria-label", `Mean detection per assessed page: ${average}`);
     td.classList.toggle("negative", criterion.negative === true && value.detected > 0);
     td.title = `${pageCount}. ${value.detail}`;
     const li = document.createElement("li");

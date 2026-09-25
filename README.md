@@ -20,13 +20,24 @@ The **Website Facts** popup collects real observations. It combines local DOM an
 | Recommendations, notification prompts, streaks/rewards | Visible wording rules. |
 | Stopping points and controls | Pagination, Load more, caught-up, ordering and autoplay-control wording. |
 
-**Overall grades and weights are intentionally pending.** A feed or political topic is a descriptive fact. Observed unsolicited autoplay is marked as a negative factor. Model probability is experimental, not a calibrated accuracy, severity or harm score. Findings use a 90% positive threshold, results at 10% or below can count as not observed, and the middle remains unknown. A written AI explanation is not required.
+**Overall grades use Vlada's A–F scale:** A = 0 categories, B = 1, C = 2, D = 3, F = all 4. There is no E. The grade counts distinct categories indicated anywhere in the current origin assessment, using these observable proxies:
+
+| Article category | Signals counted by this extension |
+| --- | --- |
+| Attention monetization | Ads or sponsorship labels |
+| Personalized ranking | Recommendation wording |
+| Persistent notifications | Notification request wording |
+| Infinite engagement | Infinite scroll, unsolicited autoplay, or streaks/rewards; together they count once |
+
+The grade is an **estimate**: these signals do not verify a company's business model, its ranking algorithm or notification persistence. An empty or unresolved scan cannot earn A. With detected categories and missing evidence, the grade is marked partial and may worsen as more categories are observed. A requires all mapped signals to have been assessed without detections; it still describes the observed sample, not proof that a website is harmless. Inspection details show the four contributions and link to the article. No weights or probability averaging are used for the letter grade.
+
+Other criteria remain descriptive and do not add grade penalties. A feed or political topic alone does not reduce the grade. Observed unsolicited autoplay contributes to the infinite-engagement category. Model probability is experimental, not a calibrated accuracy, severity or harm score. Findings use a 90% positive threshold, results at 10% or below can count as not observed, and the middle remains unknown. A written AI explanation is not required.
 
 ### Serving size and coverage
 
 Serving size counts distinct pages visited while observation is active on the exact origin (scheme, host and port). Reloads and revisits update the same page. Known tracking parameters and ordinary anchors are ignored; meaningful queries and hash-router paths are retained. Raw paths are stored only as device-keyed digests.
 
-The label shows an **average per page**, expressed as the percentage of assessed pages where a criterion was detected (for example, 1 of 3 becomes 33%). Unknown pages are excluded from that criterion's denominator. Criteria that remain entirely unknown are hidden; assessed criteria with zero detections stay visible. Inspection details retain exact page counts, Jev probabilities and coverage gaps. Local coverage is the percentage of visited pages with a collected DOM snapshot, not a measure of whether every criterion was resolved. Positive findings remain in that page's sample until reset, even if a banner disappears or playback stops. This is an accumulating observation record, not a live absence guarantee or an assessment of the entire website.
+The label shows the **arithmetic mean per assessed page** as a number: a detection is 1 and an assessed non-detection is 0 (1 of 3 becomes 0.33; 3 of 3 becomes 1). Values are rounded to at most two decimal places. This measures presence, not the number of individual ads, reactions or videos. Unknown pages are excluded from that criterion's denominator. Criteria that remain entirely unknown are hidden; assessed criteria with zero detections stay visible. Inspection details retain exact page counts, Jev probabilities and coverage gaps. Local coverage remains the percentage of visited pages with a collected DOM snapshot, not a measure of whether every criterion was resolved. Positive findings remain in that page's sample until reset, even if a banner disappears or playback stops. This is an accumulating observation record, not a live absence guarantee or an assessment of the entire website.
 
 ## Local development with hot reload
 
@@ -93,7 +104,7 @@ npm test
 npm run build
 ```
 
-Tests cover encrypted storage and failure states, content-script authorization, navigation/page identity, reset and late responses, input bounds, redaction, uncertainty and mocked Jev transport. They require no API key and make no paid requests.
+Tests cover encrypted storage and failure states, content-script authorization, navigation/page identity, reset and late responses, input bounds, redaction, uncertainty, mocked Jev transport, all five grade boundaries, category deduplication and incomplete grading coverage. They require no API key and make no paid requests.
 
 For manual checks, visit [the local fixture](http://127.0.0.1:5173/fixture.html?page=one) while Vite runs. This synthetic page is excluded from the release build. Avoid editing source during a navigation test because hot reload resets the fixture.
 
@@ -111,7 +122,7 @@ Verified in Chrome with the synthetic fixture: local feed/reaction/rating detect
 
 This is a first detector implementation. It inspects the top document and accessible shadow roots, with a 5,000-element cap and sampling about every 2.5 seconds while visible. It does not inspect iframe contents, perform OCR, transcribe video/audio, reconstruct Chrome's full accessibility tree, analyze network trackers or use maintained ad-blocking lists. Unnamed icons and non-English controls can be missed. Brief events before injection or between samples may be missed. Custom or delayed play controls can be misclassified. Overlay presence does not establish manipulative purpose, and a finite scroll observation cannot prove a feed is endless.
 
-Next: evaluate false positives and Jev thresholds on representative pages, refine criteria with the user, then define grading weights and transparent score contributions. The broader [detection research](docs/detection-research.md), [origin design](docs/origin-assessments.md) and [key storage design](docs/jev-key-storage.md) include future work beyond this version.
+Next: evaluate false positives and Jev thresholds on representative pages, strengthen evidence for the four grading categories, and refine criteria with the user. The broader [detection research](docs/detection-research.md), [origin design](docs/origin-assessments.md) and [key storage design](docs/jev-key-storage.md) include future work beyond this version.
 
 ```text
 extension/
