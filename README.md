@@ -7,6 +7,30 @@
 
 Our [detection research](docs/detection-research.md) translates those ideas into browser observations and optional AI classification. The extension shows how the pages you visit compete for your attention.
 
+## Example labels
+
+Three illustrations using the real popup and synthetic observations on fictional sites. Click a label to enlarge it.
+
+<table>
+  <tr>
+    <th>Reading with ads</th>
+    <th>Recommended feed</th>
+    <th>All four categories</th>
+  </tr>
+  <tr>
+    <td valign="top"><a href="docs/examples/reading-with-ads.png"><img src="docs/examples/reading-with-ads.png" width="280" alt="Example B grade, partial: ads detected on two of three pages, average 0.67." /></a></td>
+    <td valign="top"><a href="docs/examples/recommended-feed.png"><img src="docs/examples/recommended-feed.png" width="280" alt="Example D grade: ads, recommendations and infinite scroll indicate three attention categories." /></a></td>
+    <td valign="top"><a href="docs/examples/all-four-categories.png"><img src="docs/examples/all-four-categories.png" width="280" alt="Example F grade: all four categories indicated, including autoplay and unread notification badges." /></a></td>
+  </tr>
+  <tr>
+    <td><strong>B · partial</strong> — one category observed</td>
+    <td><strong>D</strong> — three categories observed</td>
+    <td><strong>F</strong> — all four categories observed</td>
+  </tr>
+</table>
+
+Rows show arithmetic means per assessed page; the grade counts distinct categories. Unknown criteria are hidden. [Example data and regeneration](docs/examples/README.md).
+
 ## Download and try it
 
 **[Download the Chrome extension (.zip)](https://github.com/romanenko/nutrition-label/releases/latest/download/nutrition-label-chrome.zip)** · [Latest release and notes](https://github.com/romanenko/nutrition-label/releases/latest) · [Install guide](docs/INSTALL.txt)
