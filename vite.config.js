@@ -10,6 +10,9 @@ export default defineConfig(({ command }) => ({
       manifest: {
         ...manifest,
         name: command === "serve" ? "Nutrition Label (Dev)" : manifest.name,
+        ...(command === "build" ? { content_security_policy: {
+          extension_pages: "script-src 'self'; object-src 'self'; connect-src https://api.typesafe.ai; frame-ancestors 'none'",
+        } } : {}),
       },
     }),
   ],

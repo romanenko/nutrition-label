@@ -1,6 +1,8 @@
 # Serving size across a website
 
-Design date: September 24, 2026. Proposed behavior; the current popup still has a static one-page serving size and no score.
+Design date: September 24, 2026. Implemented in version 0.2: exact-origin assessments, keyed page identities, distinct serving size, per-criterion coverage, optional following and independent reset. Overall scores remain deferred. The [README](../README.md) describes current behavior and verification.
+
+Implementation choices: local coverage means at least one collected snapshot; it does not imply semantic/media coverage. Positive findings accumulate until reset. Page identities ignore common tracking parameters and ordinary anchors, retaining meaningful queries and hash-router routes. Collection is bounded to 1,000 pages and approximately 7 MB of serialized records. Automatic rubric migration, retention/decay and comprehensive back/forward-cache evaluation remain future work.
 
 ## Product behavior
 

@@ -1,124 +1,127 @@
 # Nutrition Label
 
-A nutrition label for the web: a Chrome extension that helps people understand how a page treats their attention.
+A nutrition label for the web: a Chrome extension that shows how the pages you visit compete for your attention. Inspired by [Vlada Bortnik's technology nutrition labels](https://www.linkedin.com/pulse/weve-been-talking-big-techs-tobacco-moment-years-lets-vlada-jpt2c).
 
-The idea is to inspect the page the user is visiting, use an AI model to help classify observable patterns, and present a familiar food-label-style breakdown of potential manipulation and attention monetization. Examples include distracting banners, autoplay video, and feeds designed to keep people scrolling.
+## Version 0.2
 
-## Current version
+The **Website Facts** popup collects real observations. It combines local DOM and behavior measurements with optional text-only Jev classification using your own API key.
 
-**0.1.0 is the bare-bones label, ready to load in Chrome.** Click the extension icon to open a black-and-white **Website Facts** label with heavy dividing rules, an overall-score placeholder, and a per-criterion breakdown.
+| Criterion | Implemented method |
+| --- | --- |
+| Content feed | Explicit feed semantics; repeated article/card candidates; Jev classification of ambiguous structure. |
+| Infinite scroll | New item identities after a near-end scroll, without a recent Load more action. |
+| Likes, hearts, reactions | Named interactive controls within feed candidates. |
+| Stars, ratings, votes | Named interactive rating/vote controls within feed candidates. |
+| Political topics, hateful language, provocative framing | Three independent Jev questions for sampled visible feed items; requires separate feed-text opt-in. |
+| Autoplay video | Starts without a matching recent play action. Muted starts count; already-playing video and autoplay attributes alone remain unknown. |
+| Obstructive banners | Large visible fixed/sticky panels and dialogs, with approximate viewport obstruction. |
+| Ads and sponsorship | Visible ad/sponsorship labels. |
+| Deceptive prompts | Jev classifies wording from candidate prompts and action labels. |
+| Recommendations, notification prompts, streaks/rewards | Visible wording rules. |
+| Stopping points and controls | Pagination, Load more, caught-up, ordering and autoplay-control wording. |
 
-- Shows the active website's hostname.
-- Includes placeholders for content feeds, infinite scroll, autoplay media, distracting banners, attention monetization, and deceptive prompts.
-- Explicitly marks all criteria as **Not assessed** and leaves the overall score blank.
-- Handles unavailable tabs and browser pages without inventing a result.
+**Overall grades and weights are intentionally pending.** A feed or political topic is a descriptive fact. Observed unsolicited autoplay is marked as a negative factor. Model probability is experimental, not a calibrated accuracy, severity or harm score. Findings use a 90% positive threshold, results at 10% or below can count as not observed, and the middle remains unknown. A written AI explanation is not required.
 
-There is no page analysis, feed detection, AI integration, or scoring yet. The displayed criteria are a starting point for discussion, not a settled grading system.
+### Serving size and coverage
+
+Serving size counts distinct pages visited while observation is active on the exact origin (scheme, host and port). Reloads and revisits update the same page. Known tracking parameters and ordinary anchors are ignored; meaningful queries and hash-router paths are retained. Raw paths are stored only as device-keyed digests.
+
+The label shows **detected pages / pages assessed for that criterion**. Criteria that remain entirely unknown are hidden; assessed criteria with zero detections stay visible. Inspection details include remaining coverage gaps for visible rows. Local assessment coverage means a DOM snapshot was collected, not that every criterion was resolved. Positive findings remain in that page's sample until reset, even if a banner disappears or playback stops. This is an accumulating observation record, not a live absence guarantee or an assessment of the entire website.
 
 ## Local development with hot reload
 
-Use Node.js 24 (or Node.js 22.12+) and npm. If you use `fnm`, run `fnm use` in this folder to select the version in `.node-version`.
+Use Node.js 24 (or 22.12+) and npm. With `fnm`, run `fnm use` in this folder.
 
 ```sh
 npm install
 npm run dev
 ```
 
-Keep that terminal running. Vite and CRXJS watch the source in `extension/` and generate a development extension in `dist/dev/`.
-
-### Load it into your Chrome once
+Keep the terminal running. Vite and CRXJS build into `dist/dev` as you edit `extension/`.
 
 1. Open `chrome://extensions` and enable **Developer mode**.
-2. Click **Load unpacked** and select **`dist/dev`** inside this repository. On macOS, press **Command + Shift + G** in the folder picker to paste its full path.
-3. Pin **Nutrition Label (Dev)** using Chrome's extensions menu.
-4. Visit a website and click the extension icon.
+2. Choose **Load unpacked** and select `/Users/michael/Developer/nutrition-label/dist/dev` (or your checkout's `dist/dev`). On macOS, use **Command + Shift + G** in the picker to paste a path.
+3. Disable any older copy loaded from `extension/` or `dist/release`. Pin **Nutrition Label (Dev)**.
+4. Open a regular website and click the extension. It begins a two-minute observation window. Scroll and use the page normally, then reopen the popup to see findings.
+5. Enable **Assess this site as I browse** to collect on future visits and route changes. Chrome asks for that site's access and navigation permission. Other origins need their own opt-in.
 
-If you loaded the original `extension/` folder earlier, disable that copy so you're testing **Nutrition Label (Dev)**. Edit files in `extension/`, not the generated `dist/dev/` folder.
+If you already have the extension loaded, **reload it once on `chrome://extensions` after this upgrade**, then reload the website tab. New permissions and the collector require a fresh extension instance.
 
-### Iterating together
+- **Layout preview:** [http://127.0.0.1:5173/popup.html](http://127.0.0.1:5173/popup.html). Updates on save; Chrome extension APIs are unavailable here. Settings preview disables credential entry.
+- **Real extension:** CSS updates live; JavaScript/HTML changes refresh the popup. Reopen it if Chrome closes it. Background/manifest changes can reload the whole extension; refresh the inspected page to replace its collector.
+- **After restarting:** run `npm run dev` and reload the extension if it is not reconnecting. Session keys are cleared by an extension reload; saved encrypted keys must be unlocked again.
 
-- **Layout preview:** open [http://127.0.0.1:5173/popup.html](http://127.0.0.1:5173/popup.html) in a browser or the Codex browser panel. It stays open and updates as we save changes. It displays **Label preview** because it cannot access Chrome's extension APIs.
-- **Real extension:** open the toolbar popup on the website you want to inspect. CSS updates live; HTML and JavaScript changes refresh the popup. Chrome closes toolbar popups when they lose focus, so click the icon again if it closes while editing.
-- **Manifest and background changes:** these may reload the entire extension. Reopen the popup afterward. If Chrome shows an extension error after changing permissions, reload it on `chrome://extensions`.
-- **After a restart:** run `npm run dev` again. If the extension isn't reconnecting, reload **Nutrition Label (Dev)** on `chrome://extensions`.
+The server uses port 5173 and fails if it is occupied, rather than selecting a different port.
 
-The development server uses the fixed local address above. If port 5173 is occupied, it fails rather than silently changing ports. Stop the other process using that port, then restart `npm run dev`.
-
-### Test without a development server
+### Standalone build
 
 ```sh
 npm run build
 ```
 
-Load **`dist/release`** as an unpacked extension. This standalone build has no hot reload or dependency on the development server. Development and release outputs are separate, so building does not overwrite the copy loaded for local development. No AI API key is needed for either version.
+Load `dist/release` as an unpacked extension. It needs no development server. Building does not overwrite `dist/dev`. Local detection works without a Jev key.
 
-## Product direction
+## Jev settings
 
-Start small and develop the criteria together. The eventual label should show what was observed, how confidently it was classified, how each criterion was graded, and how those grades contributed to an overall score. A high-probability classification is enough to show a finding; written explanations are optional.
+Open **Jev & settings** beneath the label, or the extension's **Options** from Chrome's extension menu.
 
-The original inspiration is [Vlada Bortnik's proposal for technology nutrition labels](https://www.linkedin.com/pulse/weve-been-talking-big-techs-tobacco-moment-years-lets-vlada-jpt2c). Our [detection research](docs/detection-research.md) proposes a combination of browser measurements, rules and text-only Jev classification, with additional criteria inspired by the article. It is a research plan, not implemented detection.
+1. Paste your TypeSafe API key into the installed extension's settings.
+2. Choose **For this browser session**, or **Encrypted on this device** with a passphrase of 12–256 characters.
+3. Save. This makes no API request. **Test connection** optionally sends a small synthetic request using your API credits.
+4. Enable **Use Jev for classification** and save analysis preferences. Chrome requests access to `api.typesafe.ai`.
+5. Enable **Include sampled feed text** separately for political topics, hateful language and provocative framing.
 
-Two related designs describe [an evolving label across visited pages on an origin](docs/origin-assessments.md) and [user-provided Jev keys](docs/jev-key-storage.md). Serving size will reflect distinct pages visited while assessment is enabled, with coverage shown separately. Jev access will use the user's own key, kept in memory for a browser session or saved encrypted with a passphrase. Neither feature is implemented yet.
+Calls go directly from the extension worker to the fixed TypeSafe endpoint using `jev-1.13.0`. Up to 12 visible feed items and a few candidate prompt/structure records are sent per batch. Text is bounded and common links, emails, long numbers and credential-like strings are redacted. Recognized private-message paths, password forms and chat logs suppress text upload. These are heuristics, not a guarantee that public or personalized page text contains no personal information; enable feed-text analysis only for pages you want to share with TypeSafe.
 
-| Candidate criterion | Questions to explore later |
-| --- | --- |
-| Content feed | Does the page contain a feed? Subcriteria include infinite scroll, likes/hearts/votes/ratings, political topics, hateful language, and provocative or outrage-oriented framing. |
-| Infinite scroll, within Content feed | Does more content load automatically? Is there a clear stopping point? |
-| Autoplay media | Does video or audio start without an explicit play action? Observed unsolicited video autoplay is a negative factor, including muted and automatic next-video playback; severity remains to be defined. |
-| Distracting banners | Do overlays, sticky banners, or moving elements interrupt reading or obstruct content? |
-| Attention monetization | What visible evidence suggests ads, sponsored content, or engagement incentives? Is sponsorship disclosed? |
-| Deceptive prompts | Do choices use misleading labels, unequal prominence, repeated pressure, or unnecessary friction? |
+The worker limits automatic classification to 3 batches per page and 60 total per hour in a browser session. Unchanged input is cached; changed input may require another batch. Local measurements continue when the key is locked, the service fails or a request limit is reached. No request is made just by saving a key.
 
-**A feed's presence is a fact, not automatically a negative grade.** Political subject matter, identity-targeted hateful language, and provocative framing are separate classifications. Context matters: an intentionally opened feed, user-started video, and unsolicited autoplay should not be treated as equivalent. Visible evidence also cannot conclusively establish a website's business model or intent.
+### Storage and privacy
 
-### Grading questions for a later iteration
+- Session keys stay in restricted `chrome.storage.session`. Persistent keys use AES-256-GCM encryption with a fresh salt/IV and a PBKDF2-SHA-256 passphrase key (600,000 iterations). The passphrase is not stored.
+- Both storage areas exclude content scripts. Only trusted extension pages can issue credential commands; no message returns the key. The inspected website never receives it.
+- **Lock** clears the unlocked session and aborts requests. **Forget key** removes stored copies; revoke at TypeSafe to invalidate the provider credential.
+- Page text is transient. Local records contain origin names, keyed page digests, dates, findings, probabilities, coverage and versions. Origins and findings can still reveal browsing interests. Nothing is synced to your Google account.
+- **Reset this site** or **Clear all assessments & stop following** deletes observations independently of your key. History is capped at 1,000 pages and a conservative storage limit; collection pauses when full instead of silently dropping pages.
+- Incognito assessment is disabled. There is no analytics backend. A compromised extension or device can access an unlocked key; passphrase encryption protects the locked saved copy.
 
-- Which criteria should be descriptive facts, and which should affect the score?
-- What does a higher score mean, and what scale is useful?
-- How should frequency, intrusiveness, and user control affect each grade?
-- How should grades combine, and how can the breakdown make each contribution clear?
-- How should unknowns, limited coverage, and low-confidence classifications be displayed?
-- What should be evaluated per page, per visit, or across an entire website?
+Chrome host grants cover a scheme/host across ports. The worker still enforces exact-origin opt-in before accepting observations. Turning off following stops collection but retains Chrome's host permission; revoke that grant in Chrome's extension settings if desired.
 
-Jev is the planned text classifier. No weights, thresholds, or score direction are chosen yet. Unknown or unassessed criteria must remain distinguishable from an observed absence. The extension should retain supporting signals for evaluation and avoid presenting AI inferences as proven intent.
+## Testing
 
-## Roadmap
+```sh
+npm test
+npm run build
+```
 
-- [x] Create the private repository and document the idea.
-- [x] Build a minimal extension that displays the nutrition-style label on click.
-- [ ] Refine the criteria and agree on definitions together.
-- [ ] Collect page signals on demand, starting with a small set of observable facts such as feed presence.
-- [ ] Implement Jev access with user-provided keys and minimal, redacted model inputs.
-- [ ] Track distinct visited pages per origin and update the label as assessments arrive.
-- [ ] Design per-criterion grades and a transparent overall score.
-- [ ] Show confidence and the contribution of each criterion to the score, with optional supporting details.
-- [ ] Validate against varied pages and iterate on false positives.
+Tests cover encrypted storage and failure states, content-script authorization, navigation/page identity, reset and late responses, input bounds, redaction, uncertainty and mocked Jev transport. They require no API key and make no paid requests.
 
-## Implementation
+For manual checks, visit [the local fixture](http://127.0.0.1:5173/fixture.html?page=one) while Vite runs. This synthetic page is excluded from the release build. Avoid editing source during a navigation test because hot reload resets the fixture.
 
-Plain HTML, CSS, and JavaScript using Chrome's Manifest V3, with Vite and CRXJS for development and packaging. The release extension's only requested permission is `activeTab`, used to read the current tab's URL after the extension is invoked. The popup displays only its hostname.
+1. Open the extension: feed, reaction/rating controls and visible sponsorship/prompt wording should be found. Jev-only rows remain unknown and hidden with AI off.
+2. Scroll inside the bordered feed to its end. New items arrive; infinite scroll should become detected.
+3. Click **Play video**: this is user-started playback. Pause, wait at least three seconds, then click **Schedule video**: the unsolicited muted start should be detected as a negative factor.
+4. Enable site following; visit **Page two**, then **SPA route**. Serving size becomes three. Reload or revisit; the count stays three.
+5. Try an unrelated origin: it has a separate assessment. Reset the fixture site: its saved findings disappear and following stops.
+6. Use a dummy key to exercise encrypted Save, Lock, wrong-passphrase rejection, Unlock and Forget. Do not test a dummy key against the provider.
+7. Open `chrome://extensions` and the localhost layout preview: neither should produce a fabricated page assessment or accept a real API key in the preview.
 
-The release version has no content scripts, background worker, network requests, AI calls, analytics, or stored browsing data. During development, CRXJS adds a reload worker and access to the local development server; these are excluded from the release build. A future analysis feature should request only the access it needs, explain any data sent to a model, and keep provider secrets out of the extension bundle.
+Verified in Chrome with the synthetic fixture: local feed/reaction/rating detection, infinite scroll, user-started versus unsolicited muted video, origin counting through full and SPA navigation, reload deduplication, restricted content-script storage, and the encrypted-key lifecycle. A user-provided key also passed the live connection test and returned classifications for synthetic feed text. Browser checks on a synthetic fixture validate mechanics, not real-world detection accuracy; representative Jev evaluation remains future work.
+
+## Current limits and next steps
+
+This is a first detector implementation. It inspects the top document and accessible shadow roots, with a 5,000-element cap and sampling about every 2.5 seconds while visible. It does not inspect iframe contents, perform OCR, transcribe video/audio, reconstruct Chrome's full accessibility tree, analyze network trackers or use maintained ad-blocking lists. Unnamed icons and non-English controls can be missed. Brief events before injection or between samples may be missed. Custom or delayed play controls can be misclassified. Overlay presence does not establish manipulative purpose, and a finite scroll observation cannot prove a feed is endless.
+
+Next: evaluate false positives and Jev thresholds on representative pages, refine criteria with the user, then define grading weights and transparent score contributions. The broader [detection research](docs/detection-research.md), [origin design](docs/origin-assessments.md) and [key storage design](docs/jev-key-storage.md) include future work beyond this version.
 
 ```text
 extension/
-  manifest.json     Extension metadata and toolbar popup
-  popup.html        Nutrition-style label and proposed criteria
-  popup.css         Black-and-white food-label styling
-  popup.js          Active website context and fallback messages
-  icons/            Toolbar icons and their SVG source
-vite.config.js     Dev server, extension bundling, and output directories
-dist/dev/          Generated extension for hot reload (gitignored)
-dist/release/      Generated standalone extension (gitignored)
+  background.js    Permissions, assessments, request budgets and credential commands
+  collector.js     Local DOM, accessible-name and behavior observations
+  lib/             Rules, identity/aggregation, Jev client and encrypted vault
+  popup.*          Nutrition-style label
+  options.*        Keys, privacy preferences and assessment management
+  fixture.html     Local synthetic detector test page
+tests/             Unit and worker integration tests
+vite.config.js     Development and standalone packaging
+dist/              Generated builds (gitignored)
 ```
-
-### Manual checks
-
-1. Load the extension and confirm that clicking its icon opens the label.
-2. Open it on two different websites and check that the hostname follows the active tab.
-3. Verify that every criterion says **Not assessed**, the score is an em dash, and the status says **Not analyzed**.
-4. Open it on a browser page such as `chrome://extensions`; confirm that an unavailable-page message appears and no assessment is fabricated.
-5. Open the local preview URL while `npm run dev` is running; confirm that it shows a layout preview and updates when source files change.
-6. Inspect the popup and check that no JavaScript errors appear.
-
-References: [CRXJS setup](https://crxjs.dev/guide/installation/from-scratch/), [toolbar popups](https://developer.chrome.com/docs/extensions/reference/api/action), [the activeTab permission](https://developer.chrome.com/docs/extensions/develop/concepts/activeTab), and [loading an unpacked extension](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world).

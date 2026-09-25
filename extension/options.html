@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Settings · Nutrition Label</title>
+    <link rel="stylesheet" href="options.css" />
+    <script type="module" src="options.js"></script>
+  </head>
+  <body>
+    <main>
+      <header><p class="eyebrow">NUTRITION LABEL</p><h1>Your key. Your browsing.</h1><p>Local observations work on their own. Add your Jev key when you want help classifying ambiguous patterns.</p></header>
+      <p id="preview" class="notice" hidden>Layout preview only. Open settings from the installed Chrome extension to enter a key.</p>
+      <section aria-labelledby="key-title"><div class="section-heading"><h2 id="key-title">Jev API key</h2><span id="key-status" class="badge">Not configured</span></div>
+        <form id="save-form" autocomplete="off">
+          <label for="api-key">API key</label><input id="api-key" name="jev-api-key" type="password" autocomplete="off" spellcheck="false" required placeholder="Paste your TypeSafe API key" />
+          <label for="storage-mode">Keep this key</label><select id="storage-mode"><option value="session">For this browser session</option><option value="encrypted">Encrypted on this device</option></select>
+          <div id="passphrase-field" hidden><label for="passphrase">Unlock passphrase</label><input id="passphrase" type="password" autocomplete="new-password" minlength="12" maxlength="256" /><p class="hint">At least 12 characters. You’ll unlock after a browser restart or extension update. A forgotten passphrase cannot be recovered.</p></div>
+          <p class="hint" id="storage-hint">Kept in memory until Chrome restarts or the extension reloads. Saving does not make an API request.</p>
+          <button type="submit">Save key</button>
+        </form>
+        <form id="unlock-form" hidden autocomplete="off"><label for="unlock-passphrase">Unlock passphrase</label><div class="inline"><input id="unlock-passphrase" type="password" autocomplete="current-password" required maxlength="256" /><button type="submit">Unlock</button></div></form>
+        <div class="actions"><button id="test-key" type="button" class="secondary">Test connection</button><button id="lock-key" type="button" class="secondary">Lock</button><button id="forget-key" type="button" class="text-button">Forget key</button></div>
+        <p class="hint">Test connection uses a small Jev request and your API credits. It sends a synthetic example, with no page content.</p>
+      </section>
+      <section aria-labelledby="analysis-title"><h2 id="analysis-title">Choose what to analyze</h2>
+        <form id="preferences-form">
+          <label class="check"><input id="enable-ai" type="checkbox" /><span><strong>Use Jev for classification</strong><small>Send short, redacted prompt labels and structural descriptions directly to TypeSafe. No key is sent to the websites you inspect.</small></span></label>
+          <label class="check"><input id="feed-text" type="checkbox" /><span><strong>Include sampled feed text</strong><small>Analyze political topics, hateful language and provocative framing. Up to 12 visible items per batch may contain personal content; enable this only for pages you want to share with TypeSafe. Recognized private-message pages are excluded.</small></span></label>
+          <p class="hint">Up to 3 classification batches per page and 60 total per hour in this browser session. Jev probabilities use an experimental 90% display threshold. An uncertain result stays unknown.</p>
+          <button type="submit">Save analysis preferences</button>
+        </form>
+      </section>
+      <section aria-labelledby="privacy-title"><h2 id="privacy-title">Local assessments</h2><p>Serving size counts distinct pages on each origin. Raw page text is not saved. Following starts only when you enable it on a website.</p><ul id="sites"></ul><button id="clear-data" type="button" class="secondary">Clear all assessments & stop following</button></section>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+      <footer>Encrypted storage protects a locked copy of your key with your passphrase. It cannot protect an unlocked browser from a compromised device or extension. Keys are never synced to your Google account.</footer>
+    </main>
+  </body>
+</html>

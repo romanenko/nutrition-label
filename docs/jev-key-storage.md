@@ -1,6 +1,8 @@
 # User-provided Jev keys
 
-Design date: September 24, 2026. Proposed mechanism; no credential storage or API integration is implemented yet.
+Design date: September 24, 2026. Implemented in version 0.2 with a settings UI, restricted session storage, passphrase-encrypted persistence, request isolation, lock/forget and optional synthetic connection test. See the [README](../README.md) for usage. Credential lifecycle and transport failures are covered with mocked responses and dummy local keys.
+
+The envelope below describes the design; the actual compact schema is defined in `extension/lib/vault.js`. Automatic requests use a 20-second timeout, a 30-second retry delay for failures, and limits of 3 batches per page / 60 total per hour per browser session. Invalid keys stop provider retries until replaced or unlocked again. Device-specific KDF benchmarking and broader threat review remain future work.
 
 ## Decision and user flow
 
@@ -95,7 +97,7 @@ flowchart LR
 
 The Jev request is `POST https://api.typesafe.ai/v1/systemone`, authenticated with an `Authorization: Bearer` header. The key belongs only in that header, never in the model's state or questions. [TypeSafe API][jev-api]
 
-Add `storage` and a service worker when this feature is implemented. Request optional host access to `https://api.typesafe.ai/*` when the user enables Jev. The actual request destination is hardcoded to the endpoint above; a Chrome host permission does not restrict the allowed URL path. Set a release CSP allowing connections only to required endpoints. Chrome permits cross-origin requests from the extension worker with host access. [Extension network requests][network]
+The implementation uses `storage` and a service worker, with optional host access to `https://api.typesafe.ai/*` when the user enables Jev. The actual request destination is hardcoded to the endpoint above; a Chrome host permission does not restrict the allowed URL path. Release CSP allows connections only to the required provider. Chrome permits cross-origin requests from the extension worker with host access. [Extension network requests][network]
 
 Use `credentials: "omit"`, `redirect: "error"`, `cache: "no-store"`, an explicit request timeout, and HTTPS. Do not offer a user- or page-controlled endpoint override that could receive the key. Development reload permissions stay separate from release policy.
 

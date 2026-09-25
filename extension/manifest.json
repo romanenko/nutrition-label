@@ -1,9 +1,15 @@
 {
   "manifest_version": 3,
   "name": "Nutrition Label",
-  "version": "0.1.0",
-  "description": "A nutrition-style label for a website's impact on your attention. An early prototype; analysis is coming next.",
-  "permissions": ["activeTab"],
+  "version": "0.2.0",
+  "minimum_chrome_version": "120",
+  "description": "A nutrition-style label for website attention patterns, with local observations and optional Jev classification.",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "optional_permissions": ["webNavigation"],
+  "optional_host_permissions": ["http://*/*", "https://*/*"],
+  "incognito": "not_allowed",
+  "background": { "service_worker": "background.js", "type": "module" },
+  "options_ui": { "page": "options.html", "open_in_tab": true },
   "action": {
     "default_title": "View Website Facts",
     "default_popup": "popup.html",

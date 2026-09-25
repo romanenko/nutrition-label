@@ -1,0 +1,33 @@
+:root { font: 15px/1.5 Arial, Helvetica, sans-serif; color: #111; background: #f7f7f4; color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 48px 24px; }
+main { max-width: 640px; margin: 0 auto; }
+header { border-top: 10px solid #111; padding-top: 18px; }
+h1 { font-size: clamp(28px, 5vw, 38px); line-height: 1.1; letter-spacing: -1px; margin: 10px 0 14px; }
+h2 { font-size: 19px; line-height: 1.2; margin: 0 0 18px; }
+p { margin: 0 0 14px; }
+.eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 2px; }
+section { border: 1px solid #111; background: #fff; padding: 24px; margin-top: 24px; }
+.section-heading { display: flex; align-items: start; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+.badge { font-size: 11px; border: 1px solid #aaa; padding: 3px 7px; }
+label { display: block; font-weight: 700; margin: 14px 0 5px; }
+input[type=password], select { display: block; width: 100%; border: 1px solid #777; border-radius: 0; font: inherit; padding: 10px; background: #fff; color: #111; }
+button { font: inherit; font-weight: 700; padding: 9px 13px; background: #111; color: #fff; border: 1px solid #111; cursor: pointer; }
+button:active { transform: scale(0.98); }
+button:disabled, input:disabled, select:disabled { opacity: 0.45; cursor: default; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid #111; outline-offset: 3px; }
+.secondary { background: #fff; color: #111; }
+.text-button { background: #fff; color: #111; border-color: transparent; text-decoration: underline; }
+.hint, footer { color: #555; font-size: 12px; line-height: 1.5; margin-top: 9px; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
+.inline { display: flex; align-items: center; gap: 10px; }
+.check { display: flex; align-items: flex-start; gap: 10px; margin: 18px 0; }
+.check input { accent-color: #111; margin-top: 5px; flex-shrink: 0; }
+.check small { display: block; font-weight: 400; color: #555; margin-top: 4px; font-size: 12px; }
+.status { position: sticky; bottom: 12px; background: #111; color: #fff; padding: 12px 16px; margin: 20px 0 0; }
+.status:empty { display: none; }
+.notice { padding: 12px; border: 1px solid; margin-top: 20px; }
+footer { margin: 24px 0; }
+#sites { padding-left: 20px; font-size: 13px; }
+#sites li { margin-bottom: 7px; overflow-wrap: anywhere; }
+[hidden] { display: none !important; }

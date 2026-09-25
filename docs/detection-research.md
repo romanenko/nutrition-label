@@ -1,6 +1,6 @@
 # Detecting attention patterns with rules and Jev
 
-Research checked: September 24, 2026. Status: proposed approach, not implemented or benchmarked. No Jev API calls were made for this research.
+Research checked: September 24, 2026. Version 0.2 implements a first subset of this research; see the [README](../README.md) for the exact detector matrix and limitations. Classification accuracy is not benchmarked.
 
 ## Recommendation
 
@@ -8,7 +8,7 @@ Build a hybrid system: collect browser facts, use rules to find relevant UI regi
 
 A high-probability classification is sufficient to display a finding. A generated explanation or an exact explanatory quote is **not required**. Keep supporting signals internally so we can investigate mistakes and evaluate detectors. Model probability describes a classification; it is not the severity of a tactic or the probability of harm to the user.
 
-The label will accumulate observations across an origin as the user navigates. See [origin assessments](origin-assessments.md) for serving size and coverage, and [Jev key storage](jev-key-storage.md) for the user-provided-key design. These remain design documents; the current extension still displays placeholders.
+The label accumulates observations across an origin as the user navigates. See [origin assessments](origin-assessments.md) for serving size and coverage, and [Jev key storage](jev-key-storage.md) for the user-provided-key design. The research below includes future capabilities: motion, prominence, tracker/ad lists, richer feed subtypes and representative accuracy evaluation are not implemented. Current collection uses bounded periodic DOM sampling and media/scroll events, plus computed accessible names; it does not retrieve Chrome's full accessibility tree.
 
 ## Inspiration and scope
 

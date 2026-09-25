@@ -11,7 +11,7 @@
 }
 
 body {
-  width: 360px;
+  width: 380px;
   margin: 0;
   padding: 12px;
   font-size: 14px;
@@ -94,7 +94,7 @@ table {
 
 th,
 td {
-  padding: 7px 0;
+  padding: 5px 0;
   border-bottom: 1px solid currentColor;
   vertical-align: baseline;
 }
@@ -141,3 +141,23 @@ tbody tr:last-child > * {
   font-size: 12px;
   line-height: 1.4;
 }
+
+.score-note, .coverage { padding: 4px 0; font-size: 11px; }
+.empty-results { padding: 12px 0; font-size: 12px; border-bottom: 6px solid; }
+.coverage { border-bottom: 1px solid; font-weight: 700; padding: 6px 0; }
+.probability { display: block; font-size: 10px; font-weight: 400; }
+.negative { font-weight: 900; }
+.negative::before { content: "! "; }
+.toolbar { display: flex; justify-content: space-between; gap: 12px; margin: 12px 0 10px; }
+button { font: inherit; font-weight: 700; padding: 8px 12px; background: #000; color: #fff; border: 1px solid #000; cursor: pointer; }
+button:active { transform: scale(0.98); }
+button:disabled { opacity: 0.45; cursor: default; }
+button:focus-visible, summary:focus-visible, input:focus-visible { outline: 2px solid #000; outline-offset: 3px; }
+.text-button { color: #000; background: #fff; text-decoration: underline; border-color: transparent; }
+.follow { display: flex; align-items: center; gap: 7px; font-size: 12px; cursor: pointer; }
+.follow input { accent-color: #000; }
+.inspection { margin-top: 12px; border-top: 1px solid; padding-top: 9px; font-size: 12px; }
+.inspection summary { cursor: pointer; font-weight: 700; }
+.inspection p { margin: 10px 0; line-height: 1.45; }
+.inspection ul { padding-left: 18px; }
+.inspection li { margin: 8px 0; line-height: 1.45; }
